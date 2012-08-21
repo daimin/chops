@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+# -*- coding:UTF-8 -*-
+#encoding=utf-8
+"""vo_cls.py."""
+# Python's import is same as Java's import.
+'''
+定义了一些值对象
+'''
+'''
+基本用户数据
+'''
+class BasicUserData:
+    reg_num = 0
+    guest_num = 0
+    lead_reg = 0
+    login_num = 0
+    launch_time = 0
+    install_num = 0
+    
+class LogUser:
+    use_time = 0
+    time_long = 0
+    grade = 0
+    is_logined = False
+    # 手机信息
+    opter = 0                              #运营商  1：中国移动 2 ：中国联通 3：中国电信
+    network = ""                           #联网方式 
+    android_version = ""                   #Android版本
+    pixel = ""                             #分辨率
+    mobile_type     = ""                   #设备型号
+    channel         = ""                   #渠道
+    lang            = ""                   #系统语言
+    version         = ""                   #客户端程序的版本
+    
+    
+    
+    
+        
