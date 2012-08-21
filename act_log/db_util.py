@@ -19,6 +19,7 @@ from activity import *
 from act_cls import *
 from common import *
 from vo_cls import *
+from playground_parse import *
 
 
 class DbUtil:
@@ -327,6 +328,17 @@ class DbUtil:
                 self.cur.execute("insert into total_fan_data(`date`,`two_fan`,`two_count`,`one_fan`,`one_count`) values('%s',0,0,0,0)" % (dd,ft))
             except:
                 pk_log()
+                
+            #playground_data
+            try:
+                for pk in MAHJONG_LEVELS:
+                    sql = "insert into playground_data(`date`,`type`,total_round,player_round,robot_round,robot_rate,robot_win_round,\
+                    robot_win_rate,robot_win,robot_lose,robot_win_lose_rate,commission,sys_win_or_lose,sys_win_lose_rate,robot_clear_user_round,\
+                    robot_clear_user_rate,user_clear_robot_round,user_clear_robot_rate,user_clear_user_round,user_clear_user_rate) values(\
+                    '%s', %d, 0, 0, 0, 0.00, 0, 0.00, 0, 0, 0.00, 0, 0, 0.00, 0, 0.00, 0, 0.00, 0, 0.00)" %(dd,pk)
+            except:
+                pk_log()
+
         
            
 
@@ -647,6 +659,8 @@ class DbUtil:
         self.count_retention_rate()
         #统计异常崩溃数据
         self.count_exception_data()
+        #统计个场子的运营情况
+        self.count_playground_data()
     
     def count_honline(self):
         """统计历史在线
@@ -903,6 +917,11 @@ class DbUtil:
         sql = "update exception_data set crash_time=%d,crash_rate=%.2f,crash_os='%s',crash_phone='%s',crash_network='%s' \
         where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0],self.parseday)
         self.cur.execute(sql)
+        
+    def count_playground_data(self):
+        """统计各场子运营情况
+        """
+        pass
                 
     """
     
