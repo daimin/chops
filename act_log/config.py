@@ -7,8 +7,8 @@ log_dir = "/data0/log/"
 mysqlhost="localhost"
 database='pk_mahjong'
 username='root'
-#password='123456'
-password='daimin'
+password='123456'
+#password='daimin'
 # Is display exception info? 
 PK_LOG = False
 # RMB to game money

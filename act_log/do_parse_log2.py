@@ -30,6 +30,7 @@ def getYesdayLog(yesday):
         if m:
             logd = log_dir+m.group()
             logs.append(logd)  
+    print logs
     return logs
 
 '''
@@ -38,12 +39,13 @@ def getYesdayLog(yesday):
 def readAndParse(logs,yesday):
     pobjs = []
     for logd in logs:
-        logfile = open(logd,'r')
+        print (logd and "gamesvc")
+        #logfile = open(logd,'r')
         
-        lines = logfile.readlines()
-        for line in lines:
-            pobj = Act.genParsedObj(line,yesday)
-            pobjs.append(pobj)
+        #lines = logfile.readlines()
+        #for line in lines:
+        #   pobj = Act.genParsedObj(line,yesday)
+        #    pobjs.append(pobj)
     
     return pobjs
             
@@ -61,5 +63,5 @@ def parse():
     logs = getYesdayLog(yesday)
     if logs:
         pobjs = readAndParse(logs,yesday)
-        dbUtil = DbUtil(yesday)
-        dbUtil.update(pobjs)
+        #dbUtil = DbUtil(yesday)
+        #dbUtil.update(pobjs)

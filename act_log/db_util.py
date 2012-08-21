@@ -119,10 +119,11 @@ class DbUtil:
     
     sys_ecm_data = [0, 0]                    #系统收支情况(机器人),下面为数组，元素一为系统收入，元素二为系统支出
 
+    new_pay_user = {}                        #用来保存新增的付费用户的值    
     
     IS_ADD = True                            #是否做累计，针对于可以累加的数据,根据命令行参数来判断，如果有命令行参数就不累加，否则累加
     
-    exception_data = [{},{},{}]           #统计异常数据的数组，分别三个元素，依次为崩溃系统，崩溃手机型号，崩溃联网方式
+    exception_data = [{},{},{},0]           #统计异常数据的数组，分别四个元素，依次为崩溃系统，崩溃手机型号，崩溃联网方式，及崩溃次数
 
 
 ################################################## 函数 ##############################################################################
@@ -542,7 +543,8 @@ class DbUtil:
              % (int(tobj.userNewMney),rmbmoney,tobj.userName)
             self.cur.execute(sql)
             
-            if self.IsNewPayUser(tobj.userName,self.parseday) == True:
+            if self.new_pay_user.has_key(tobj.userName) == False and self.IsNewPayUser(tobj.userName,self.parseday) == True:
+                self.new_pay_user[tobj.userName] = True
                 sql = "update  new_pay_user set new_num=new_num+1 where `date`='%s'" %(self.parseday)
                 self.cur.execute(sql)
             #插入pay_detail
@@ -585,6 +587,7 @@ class DbUtil:
         """统计异常崩溃数据
         """
         if tobj.TAG == ACT_CLIENT_EXCEPTION:
+            self.exception_data[3] = self.exception_data[3] + 1
             #崩溃系统记录
             if self.exception_data[0].has_key(tobj.oSInfo):
                 self.exception_data[0][tobj.oSInfo] = self.exception_data[0][tobj.oSInfo] + 1
@@ -868,37 +871,37 @@ class DbUtil:
         #崩溃最多的操作系统
         for osk in self.exception_data[0]:
             if max_os[0] == "":
-                max_os[0] == osk
-                max_os[1] == self.exception_data[0][osk]
+                max_os[0] = osk
+                max_os[1] = self.exception_data[0][osk]
             else:
                 osv = self.exception_data[0][osk]
                 if osv > max_os[1]:
-                    max_os[0] == osk
-                    max_os[1] == osv
+                    max_os[0] = osk
+                    max_os[1] = osv
         #崩溃最多的手机型号
         for pk in self.exception_data[1]:
             if max_phone[0] == "":
-                max_phone[0] == pk
-                max_phone[1] == self.exception_data[1][pk]
+                max_phone[0] = pk
+                max_phone[1] = self.exception_data[1][pk]
             else:
                 pv = self.exception_data[1][pk]
                 if pv > max_phone[1]:
-                    max_phone[0] == pk
-                    max_phone[1] == pv
+                    max_phone[0] = pk
+                    max_phone[1] = pv
         #崩溃最多的联网方式
         for nk in self.exception_data[2]:
             if max_net[0] == "":
-                max_net[0] == nk
-                max_net[1] == self.exception_data[2][nk]
+                max_net[0] = nk
+                max_net[1] = self.exception_data[2][nk]
             else:
                 nv = self.exception_data[2][nk]
                 if nv > max_net[1]:
-                    max_net[0] == nk
-                    max_net[1] == nv
-        crash_time = len(self.exception_data[0])
-        crash_rate = crash_time / self.basic_userdata.login_num
+                    max_net[0] = nk
+                    max_net[1] = nv
+        crash_time = self.exception_data[3]
+        crash_rate = crash_time *1.0 / self.basic_userdata.login_num
         sql = "update exception_data set crash_time=%d,crash_rate=%.2f,crash_os='%s',crash_phone='%s',crash_network='%s' \
-        where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0])
+        where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0],self.parseday)
         self.cur.execute(sql)
                 
     """
