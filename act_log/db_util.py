@@ -121,6 +121,8 @@ class DbUtil:
 
     
     IS_ADD = True                            #是否做累计，针对于可以累加的数据,根据命令行参数来判断，如果有命令行参数就不累加，否则累加
+    
+    exception_data = [{},{},{}]           #统计异常数据的数组，分别三个元素，依次为崩溃系统，崩溃手机型号，崩溃联网方式
 
 
 ################################################## 函数 ##############################################################################
@@ -234,8 +236,8 @@ class DbUtil:
                 pk_log()
             # exception_data
             try:
-                self.cur.execute("insert into exception_data(`date`,`offline_num`,`exception_time`,`offline_rate`)\
-                values('%s',0,0,0.00)" % (dd))
+                self.cur.execute("insert into exception_data(`date`,`crash_time`,`crash_rate`,`crash_os`,\
+                `crash_phone`,crash_network) values('%s',0,0.0,"","","")" % (dd))
             except:
                 pk_log()
             # robot_data
@@ -348,6 +350,7 @@ class DbUtil:
                 self.robot_data(ao)
                 self.update_iap_data(ao)
                 self.update_economic(ao)
+                self.update_exception_data(ao)
                 
             self.last_update()
             self.cur.close()
@@ -577,7 +580,26 @@ class DbUtil:
                 self.sys_ecm_data[0] = self.sys_ecm_data[0] + int(tobj.amount)
             elif itype == ECONOMIC_EXPEND:
                 self.sys_ecm_data[1] = self.sys_ecm_data[1] + int(tobj.amount)
-    
+                
+    def update_exception_data(self, tobj):
+        """统计异常崩溃数据
+        """
+        if tobj.TAG == ACT_CLIENT_EXCEPTION:
+            #崩溃系统记录
+            if self.exception_data[0].has_key(tobj.oSInfo):
+                self.exception_data[0][tobj.oSInfo] = self.exception_data[0][tobj.oSInfo] + 1
+            else:
+                self.exception_data[0][tobj.oSInfo] = 1
+            #崩溃手机型号记录
+            if self.exception_data[1].has_key(tobj.machineNo):
+                self.exception_data[1][tobj.machineNo] = self.exception_data[1][tobj.machineNo] + 1
+            else:
+                self.exception_data[1][tobj.machineNo] = 1
+            #崩溃联网方式记录
+            if self.exception_data[2].has_key(tobj.netInfo):
+                self.exception_data[2][tobj.netInfo] = self.exception_data[2][tobj.netInfo] + 1
+            else:
+                self.exception_data[2][tobj.netInfo] = 1
             
     """
     
@@ -620,7 +642,8 @@ class DbUtil:
         self.count_phoneinfo()
         #统计留存率
         self.count_retention_rate()
-
+        #统计异常崩溃数据
+        self.count_exception_data()
     
     def count_honline(self):
         """统计历史在线
@@ -834,7 +857,44 @@ class DbUtil:
             num = self.phone_info['lang'][lang]
             self.cur.execute("update lang_data set account_num=%d where `date`='%s' and `lang`='%s'" % (num, self.parseday,lang) )
 
-                
+
+    def count_exception_data(self):
+        """统计异常崩溃数据
+        """
+        max_os = ["",0]
+        max_phone = ["",0]
+        max_net = ["",0]
+        
+        #崩溃最多的操作系统
+        for osk in self.exception_data[0]:
+            if max_os[0] == "":
+                max_os[0] == osk
+                max_os[1] == self.exception_data[0][osk]
+            else:
+                osv = self.exception_data[0][osk]
+                if osv > max_os[1]:
+                    max_os[0] == osk
+                    max_os[1] == osv
+        #崩溃最多的手机型号
+        for pk in self.exception_data[1]:
+            if max_phone[0] == "":
+                max_phone[0] == pk
+                max_phone[1] == self.exception_data[1][pk]
+            else:
+                pv = self.exception_data[1][pk]
+                if pv > max_phone[1]:
+                    max_phone[0] == pk
+                    max_phone[1] == pv
+        #崩溃最多的联网方式
+        for nk in self.exception_data[2]:
+            if max_net[0] == "":
+                max_net[0] == nk
+                max_net[1] == self.exception_data[2][nk]
+            else:
+                nv = self.exception_data[2][nk]
+                if nv > max_net[1]:
+                    max_net[0] == nk
+                    max_net[1] == nv
            
                 
     """
