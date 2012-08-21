@@ -895,7 +895,11 @@ class DbUtil:
                 if nv > max_net[1]:
                     max_net[0] == nk
                     max_net[1] == nv
-           
+        crash_time = len(self.exception_data[0])
+        crash_rate = crash_time / self.basic_userdata.login_num
+        sql = "update exception_data set crash_time=%d,crash_rate=%.2f,crash_os='%s',crash_phone='%s',crash_network='%s' \
+        where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0])
+        self.cur.execute(sql)
                 
     """
     
