@@ -1,0 +1,14 @@
+MODULES_MANAGER_V2
+act_cls|D:\www\pyscripts\chops\act_log\act_cls.py
+activity|D:\www\pyscripts\chops\act_log\activity.py
+common|D:\www\pyscripts\chops\act_log\common.py
+config|D:\www\pyscripts\chops\act_log\config.py
+db_util|D:\www\pyscripts\chops\act_log\db_util.py
+do_parse_log|D:\www\pyscripts\chops\act_log\do_parse_log.py
+insertool|D:\www\pyscripts\chops\act_log\insertool.py
+lang_tool|D:\www\pyscripts\chops\act_log\lang_tool.py
+main|D:\www\pyscripts\chops\act_log\main.py
+playground_parse|D:\www\pyscripts\chops\act_log\playground_parse.py
+test|D:\www\pyscripts\chops\act_log\test.py
+uppayboard|D:\www\pyscripts\chops\act_log\uppayboard.py
+vo_cls|D:\www\pyscripts\chops\act_log\vo_cls.py

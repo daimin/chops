@@ -71,6 +71,9 @@ class Act:
                 elif tag == ACT_ECONOMIC_LOG:
                     ActEconomic.TAG = tag
                     return ActEconomic(linelist)
+                elif tag == ACT_CLIENT_EXCEPTION:
+                    ActClientException.TAG = tag
+                    return ActClientException(linelist)
                 else:
                     return None
                 
@@ -454,4 +457,36 @@ class ActEconomic(Act):
 
         dt = datetime.datetime.strptime(self.time, "%H%M%S")
         self.economic_time = Act.LOG_DAY + " " + dt.strftime("%H:%M:%S")
-        
+
+class ActClientException(Act):
+    """客户端异常报告
+    """
+    ip = ""                      #字符串                            来源IP地址
+    port = 0                     #整数                              来源端口号
+    versionNum = ""              #字符串                            游戏版本值
+    versionString = ""           #字符串                            游戏版本串
+    oSInfo = ""                  #字符串                            系统版本信息
+    systemLang = ""              #字符串                            系统语言
+    resInfo = ""                 #字符串                            玩家终端分辨率
+    machineNo = ""               #字符串                            玩家终端机器型号
+    netInfo = ""                 #字符串                            玩家终端联网方式
+    happen_time = ""             #
+    
+    def __init__(self, linelist):
+        Act.__init__(self,linelist)
+        self.parse(linelist)
+        pass
+    
+    def parse(self, linelist):
+        self.ip = linelist[2]
+        self.port = int(linelist[3])
+        self.versionNum = linelist[4]
+        self.versionString = linelist[5]
+        self.oSInfo = linelist[6]
+        self.systemLang = linelist[7]
+        self.resInfo = linelist[8]
+        self.machineNo = linelist[9]
+        self.netInfo = linelist[10]
+
+        dt = datetime.datetime.strptime(self.time, "%H%M%S")
+        self.happen_time = Act.LOG_DAY + " " + dt.strftime("%H:%M:%S")        
