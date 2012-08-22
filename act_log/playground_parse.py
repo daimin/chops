@@ -4,24 +4,25 @@
 """
 
 import codecs
+import db_util
 
 MAHJONG_LEVELS = [
-{1:"对战场(经典)"},
-{2:"对战场(豪快)"},
-{3:"新手场(经典)"},
-{4:"新手场(豪快)"},
-{5:"初级场(经典)"},
-{6:"初级场(豪快)"},
-{7:"中级场(经典)"},
-{8:"中级场(豪快)"},
-{9:"高级场(经典)"},
-{10:"高级场(豪快)"},
-{11:"雀神场(经典)"},
-{12:"雀神场(豪快)"},
+"对战场(经典)",
+"对战场(豪快)",
+"新手场(经典)",
+"新手场(豪快)",
+"初级场(经典)",
+"初级场(豪快)",
+"中级场(经典)",
+"中级场(豪快)",
+"高级场(经典)",
+"高级场(豪快)",
+"雀神场(经典)",
+"雀神场(豪快)",
                   ]
 
 def vs(little, large):
-    return 0 if not large else little * 100 / large
+    return float(0 if not large else little * 100 / large)
 
 class summary(object):
     def __init__(self, level):
@@ -99,7 +100,9 @@ class summary(object):
                "用户间清空回合\t"\
                "用户间清空率%"
 
-def parse_file(filename):
+def parse_file(filename,parseday):
+    parseday = parseday.strftime("%Y-%m-%d") 
+
     lines = open(filename, "r").readlines()
     summary_levels = {}
     for level in MAHJONG_LEVELS:
@@ -151,18 +154,8 @@ def parse_file(filename):
     for i in xrange(len(lines)):
         parse_line(lines[i])
 
-    header = summary.header()
-
-    output_file = codecs.open(filename+".result.csv", "w", "utf-16")
-    output_file.write(u"%s\n" % header.decode('gbk'))
-    all_summary = summary("汇总")
     for k, v in sorted(summary_levels.items(), key=lambda (k,v): v.level_id):
         #for v in summary_levels.values():
-        output_file.write(u"%s\n" % str(v).decode('gbk'))
-        all_summary += v
-    output_file.write(u"%s\n" % str(all_summary).decode('gbk'))
-    
-if __name__ == "__main__":
-    parse_file("D:/www/pyscripts/log/activity.gamesvc.localhost2235.log.20120820")
-    
+        db_util.DbUtil.count_playground_data(v,parseday)
+   
 

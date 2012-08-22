@@ -39,7 +39,8 @@ def readAndParse(logs,yesday):
     pobjs = []
     for logd in logs:
         logfile = open(logd,'r')
-        
+        if "gamesvc" in logd:
+            parse_file(logd,yesday)
         lines = logfile.readlines()
         for line in lines:
             pobj = Act.genParsedObj(line,yesday)

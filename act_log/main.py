@@ -18,4 +18,4 @@ if __name__ == "__main__":
     #reload(sys)
     #sys.setdefaultencoding('gbk')
     parse()
-    print "Parse over ...."
+    print "######### Parse Success!!! #################"
