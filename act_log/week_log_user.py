@@ -30,9 +30,12 @@ class WeekLogUser(object):
             logfile = open(logd,'r')
             self.do_with_log(logfile)
             logfile.close()
+        
+        self.up_week_user_count()
     
     def get_log_file(self,parseday):
         logs = []
+        self.parseday = parseday
         for i in range(0,7):
             doday = parseday - datetime.timedelta(days = i )
             dodayfmt = doday.strftime("%Y%m%d")
@@ -54,19 +57,13 @@ class WeekLogUser(object):
                     username = linelist[5]
                     regType = int(linelist[6])
                     
-                    if regType == 1:
-                        return 
-                    if is_robot(username):
-                        return
+                    if regType == 1:                 #快速注册用户去掉
+                        continue 
+                    if is_robot(username):           #机器人去掉
+                        continue
                     self.loguser[username] = 1
     
-    def get_week_user_count(self):
-        return len(self.loguser)
-                    
-                    
-
-
-if __name__ == "__main__":
-    now = datetime.datetime.now()
-    wlu = WeekLogUser(now)
-    print wlu.get_week_user_count()
+    def up_week_user_count(self):
+        
+        db_util.DbUtil.update_week_loguser(self.parseday.strftime("%Y-%m-%d"), len(self.loguser))
+        

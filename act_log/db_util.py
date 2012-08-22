@@ -174,7 +174,7 @@ class DbUtil:
             # basic_userdata
             try:
                 sql = "insert into basic_userdata(`date`,`install_num`,`reg_num`,`guest_num`,\
-                `lead_reg`,`login_num`,`launch_time`) values('%s',0,0,0,0,0,0)" % (dd)
+                `lead_reg`,`login_num`,`launch_time`,`week_log_num`) values('%s',0,0,0,0,0,0,0)" % (dd)
                 self.cur.execute(sql)
             except:
                 pk_log()
@@ -1117,9 +1117,14 @@ class DbUtil:
         cur.close()
         
     @staticmethod
-    def update_week_loguser():
+    def update_week_loguser(doday, lognum):
         """统计周登陆用户
         """
+        conn = Db.get_conn()
+        cur = conn.cursor()
+        sql = "update basic_userdata set week_log_num=%d where `date`='%s'" %(lognum,doday)
+        cur.execute(sql)
+        cur.close()
         pass
         
  

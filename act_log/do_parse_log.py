@@ -14,6 +14,7 @@ from activity import *
 from act_cls import *
 from db_util import *
 from playground_parse import *
+from week_log_user import *
 
 '''
 得到所有的昨天的日志文件
@@ -59,7 +60,7 @@ def parse():
         offday = int(offday)
         
     yesday = now - datetime.timedelta(days = offday )
-    
+    WeekLogUser(yesday)                                        #统计周登陆用户数
     logs = getYesdayLog(yesday)
     if logs:
         pobjs = readAndParse(logs,yesday)
