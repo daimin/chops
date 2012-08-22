@@ -41,7 +41,13 @@ def  isset(v):
 #def GameMoney2RMB(gmney):
 #    return int(gmney/MONEY_RATE)
 
-    
+
+def is_robot(userName):
+    """根据用户名判断该用户是否是机器人
+    """
+    if userName.find(ROBOT_NAME_PREFIX) == -1:
+        return False
+    return True  
     
 
     

@@ -40,11 +40,12 @@ def readAndParse(logs,yesday):
     for logd in logs:
         logfile = open(logd,'r')
         if "gamesvc" in logd:
-            parse_file(logd,yesday)
+            parse_file(logd,yesday)                           #在gamesvc日志文件中获取场子运营情况的数据
         lines = logfile.readlines()
         for line in lines:
             pobj = Act.genParsedObj(line,yesday)
             pobjs.append(pobj)
+        logfile.close()
     
     return pobjs
             

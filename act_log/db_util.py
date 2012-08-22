@@ -400,7 +400,7 @@ class DbUtil:
             except:
                 pk_log()
         if tobj.TAG == ACT_LOGIN:
-            if self.is_robot(tobj.userName) == False:
+            if is_robot(tobj.userName) == False:
                 self.basic_userdata.launch_time = self.basic_userdata.launch_time + 1
                 if self.is_logined(tobj.userName) == False:
                     if int(tobj.regType) <> 1:                             #登陆用户中去掉快速注册用户
@@ -467,7 +467,7 @@ class DbUtil:
         """
         if tobj.TAG == ACT_KEEPTIME:
             #print tobj.keepTime
-            if self.is_robot(tobj.userName) == False:
+            if is_robot(tobj.userName) == False:
                 self.get_keepTime(tobj.userName,tobj.dateTimeNow, tobj.keepTime)
     
             
@@ -672,7 +672,7 @@ class DbUtil:
         user_count = 0
        
         for lk in self.log_users:
-            if self.is_robot(lk) == True:
+            if is_robot(lk) == True:
                 continue
             lu = self.log_users[lk]
             
@@ -1035,14 +1035,6 @@ class DbUtil:
         if tile_count == 2:
             self.product_data_arr[3] = self.product_data_arr[3] + 1
             self.product_data_arr[4] = self.product_data_arr[4] + total_fan
-       
-        
-    def is_robot(self,userName):
-        """根据用户名判断该用户是否是机器人
-        """
-        if userName.find(ROBOT_NAME_PREFIX) == -1:
-            return False
-        return True  
     
     def IsNewPayUser(self,userName,paytime): 
         """根据用户名判断是否是新付费用户
@@ -1123,6 +1115,12 @@ class DbUtil:
                        pgobj.level_id)
         cur.execute(sql)
         cur.close()
+        
+    @staticmethod
+    def update_week_loguser():
+        """统计周登陆用户
+        """
+        pass
         
  
         
