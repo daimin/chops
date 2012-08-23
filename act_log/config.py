@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding:gbk -*-
 #encoding=gbk
-#log_dir = "/data0/log/"
-log_dir = "D:/www/pyscripts/log/"
+log_dir = "/data0/log/"
+#log_dir = "D:/www/pyscripts/log/"
 
 mysqlhost="localhost"
 database='pk_mahjong'
 username='root'
-#password='123456'
-password='daimin'
+password='123456'
+#password='daimin'
 # Is display exception info? 
 PK_LOG = False
 # RMB to game money

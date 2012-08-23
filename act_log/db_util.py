@@ -225,7 +225,7 @@ class DbUtil:
             # exception_data
             try:
                 self.cur.execute("insert into exception_data(`date`,`crash_time`,`crash_rate`,`crash_os`,\
-                `crash_phone`,crash_network) values('%s',0,0.0,"","","")" % (dd))
+                `crash_phone`,crash_network) values('%s',0,0.0,'','','')" % (dd))
             except:
                 pk_log()
             # robot_data
@@ -1125,7 +1125,6 @@ class DbUtil:
         sql = "update basic_userdata set week_log_num=%d where `date`='%s'" %(lognum,doday)
         cur.execute(sql)
         cur.close()
-        pass
         
  
         
