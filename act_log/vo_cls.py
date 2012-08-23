@@ -22,6 +22,8 @@ class LogUser:
     time_long = 0
     grade = 0
     is_logined = False
+    
+    channel = None                         #渠道
     # 手机信息
     opter = 0                              #运营商  1：中国移动 2 ：中国联通 3：中国电信
     network = ""                           #联网方式 

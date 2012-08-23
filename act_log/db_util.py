@@ -125,7 +125,9 @@ class DbUtil:
     
     IS_ADD = True                            #是否做累计，针对于可以累加的数据,根据命令行参数来判断，如果有命令行参数就不累加，否则累加
     
-    exception_data = [{},{},{},0]           #统计异常数据的数组，分别四个元素，依次为崩溃系统，崩溃手机型号，崩溃联网方式，及崩溃次数
+    exception_data = [{},{},{},0]            #统计异常数据的数组，分别四个元素，依次为崩溃系统，崩溃手机型号，崩溃联网方式，及崩溃次数
+    
+    uid_data = {}                            #渠道数据的字典，每个元素是一个三个元素的数组，每个元素分布是新增用户、启动次数、登陆用户
 
 
 ################################################## 函数 ##############################################################################
@@ -389,7 +391,11 @@ class DbUtil:
                         else:
                             lu = LogUser()
                         lu.is_logined = True
-
+                    #得到渠道的新增用户
+                    if self.uid_data.has_key(tobj.channel):
+                        self.uid_data[tobj.channel][0] = self.uid_data[tobj.channel][0] + 1
+                    else:
+                        self.uid_data[tobj.channel] = [1,0,0]
                     #userinfo_imei
                     sql = "insert into userinfo_imei(`androidid`,`username`,`nickname`,`sex`,`gold`,\
                     `total_pay`,`qreg`,`reg_date`) values('%s','%s','%s',%d,'%s','0',%d,'%s')"\
@@ -411,6 +417,13 @@ class DbUtil:
                             lu = LogUser()
                         lu.is_logined = True
                         #保存客户端信息
+                        #得到用户的渠道信息，并保持各渠道的登陆次数
+                        channel = self.get_channel_username(tobj.userName)
+                        lu.channel = channel
+                        if self.uid_data.has_key(channel):
+                            self.uid_data[channel][1] = self.uid_data[channel][1] + 1
+                        else:
+                            self.uid_data[channel] = [0,1,0]
                         
                         if self.phone_info['network'].has_key(tobj.netInfo):
                             self.phone_info['network'][tobj.netInfo] = self.phone_info['network'][tobj.netInfo] + 1
@@ -623,6 +636,9 @@ class DbUtil:
         % (self.basic_userdata.install_num,self.basic_userdata.reg_num-self.basic_userdata.guest_num,self.basic_userdata.guest_num,self.basic_userdata.lead_reg,\
         self.basic_userdata.login_num,self.basic_userdata.launch_time,self.parseday)
         self.cur.execute(sql)
+        #更新渠道包
+        sql = "replace into uids(uid) select distinct channel from userinfo"
+        self.cur.execute(sql)
         
         #记录最后的历史在线人数 
         self.count_honline()
@@ -646,6 +662,8 @@ class DbUtil:
         self.count_retention_rate()
         #统计异常崩溃数据
         self.count_exception_data()
+        #统计渠道数据
+        self.count_channel_data()
     
     def count_honline(self):
         """统计历史在线
@@ -901,7 +919,22 @@ class DbUtil:
         crash_rate = crash_time *1.0 / self.basic_userdata.login_num
         sql = "update exception_data set crash_time=%d,crash_rate=%.2f,crash_os='%s',crash_phone='%s',crash_network='%s' \
         where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0],self.parseday)
-        self.cur.execute(sql)                
+        self.cur.execute(sql)            
+        
+    def count_channel_data(self):
+        """统计渠道数据
+        """    
+        #得到渠道登陆用户
+        for lk in self.log_users:
+            if is_robot(lk) == True:
+                continue
+            self.uid_data[lk.channel][2] = self.uid_data[lk.channel][2] + 1
+        
+        #归总所有的数据
+        for ud in self.uid_data:
+            sql = "update uid_data set new_user=%d,launch_time=%d,login_user=%d where `date`='%s' and uid='%s'"\
+             %(self.uid_data[ud][0],self.uid_data[ud][1],self.uid_data[ud][2],self.parseday,ud)
+            self.cur.execute(sql)
     """
     
     #################################工具类方法###################################################
@@ -1125,6 +1158,21 @@ class DbUtil:
         sql = "update basic_userdata set week_log_num=%d where `date`='%s'" %(lognum,doday)
         cur.execute(sql)
         cur.close()
+    
+    def get_channel_username(self, username):
+        """根据用户名称得到渠道信息，
+        --个人觉得这根据用户名到用户信息表中读取渠道号的方式非常不可取，
+        --最好的是在登陆日志中加上渠道信息
+        """
+        sql  = "select channel from userinfo where username='%s'" %(username)
+        self.cur.execute(sql)
+        row = self.cur.fetchone()
+        if row <> None:
+            return row[0]
+    
+    def update_uid_data(self,):
+        """更新渠道数据
+        """
         
  
         
