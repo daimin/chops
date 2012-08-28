@@ -74,6 +74,12 @@ class Act:
                 elif tag == ACT_CLIENT_EXCEPTION:
                     ActClientException.TAG = tag
                     return ActClientException(linelist)
+                elif tag == ACT_CLICK_LOG:
+                    ActClickLog.TAG = tag
+                    return ActClickLog(linelist)
+                elif tag == ACT_ITEM_LOG:
+                    ActItemLog.TAG = tag
+                    return ActItemLog(linelist)
                 else:
                     return None
                 
@@ -489,4 +495,54 @@ class ActClientException(Act):
         self.netInfo = linelist[10]
 
         dt = datetime.datetime.strptime(self.time, "%H%M%S")
-        self.happen_time = Act.LOG_DAY + " " + dt.strftime("%H:%M:%S")        
+        self.happen_time = Act.LOG_DAY + " " + dt.strftime("%H:%M:%S")
+
+class ActClickLog(Act):
+    """点击记录
+    """
+    userName = ""                        #字符串                            用户名
+    clickName = ""                       #字符串                            点击对象名
+    clickAddTime = ""                    #整数                              新增点击次数
+    
+    def __init__(self, linelist):
+        Act.__init__(self,linelist)
+        self.parse(linelist)
+        pass
+    
+    def parse(self, linelist):
+        self.userName = linelist[2]
+        self.clickName = linelist[3]
+        self.clickAddTime = int(linelist[4])
+        
+class ActItemLog(Act):
+    """道具记录(包括钻石)
+    """
+    userName = ""                              #字符串                            用户名
+    itemLogType = 0                            #整数                              类型
+    itemLogSubType = ""                        #字符串                            子类型
+    itemName = ""                              #字符串                            道具名
+    itemCount = ""                             #整数                              道具数量
+    
+    def __init__(self, linelist):
+        Act.__init__(self,linelist)
+        self.parse(linelist)
+        pass
+    
+    def parse(self, linelist):
+        self.userName = linelist[2]
+        self.itemLogType = int(linelist[3])
+        self.itemLogSubType = linelist[4]
+        self.itemName = linelist[5]
+        self.itemCount = int(linelist[6])
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

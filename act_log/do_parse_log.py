@@ -62,6 +62,7 @@ def parse():
     yesday = now - datetime.timedelta(days = offday )
     WeekLogUser(yesday)                                        #统计周登陆用户数
     logs = getYesdayLog(yesday)
+    print logs
     if logs:
         pobjs = readAndParse(logs,yesday)
         dbUtil = DbUtil(yesday)

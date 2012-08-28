@@ -48,6 +48,11 @@ def is_robot(userName):
     if userName.find(ROBOT_NAME_PREFIX) == -1:
         return False
     return True  
+
+def utf82gbk(str):
+    """转换UTF-8格式的编码为GBK编码
+    """
+    return str.decode("UTF-8").encode("GBK")
     
 
     

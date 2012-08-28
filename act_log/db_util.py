@@ -129,7 +129,9 @@ class DbUtil:
     
     uid_data = {}                            #渠道数据的字典，每个元素是一个三个元素的数组，每个元素分布是新增用户、启动次数、登陆用户
 
-
+    click_data = {}                          #点击事件数据
+    
+    prop_data = {}                           #道具记录数据
 ################################################## 函数 ##############################################################################
 
 
@@ -284,8 +286,7 @@ class DbUtil:
             try:
                 self.cur.execute("select uid from uids")
                 for uid in self.cur.fetchall():
-                    self.cur.execute("insert into uid_data(`date`,`uid`,`new_user`,`launch_time`,`total_user`,`login_user`,`imei_new_user`,\
-                    `imei_launch_time`,`imei_login_user`,`imei_total_user`)values('%s','%s',0,0,0,0,0,0,0,0)" % (dd, uid[0]))
+                    self.cur.execute("insert into uid_data(`date`,`uid`,`new_user`,`launch_time`,`login_user`)values('%s','%s',0,0,0)" % (dd, uid[0]))
             except:
                 pk_log()
             # basic_revenue_data
@@ -327,6 +328,25 @@ class DbUtil:
                     self.cur.execute(sql)
             except:
                 pk_log()
+                
+            #click_type_data
+            try:
+                self.cur.execute("select click_type from click_types")
+                for ct in self.cur.fetchall():
+                    sql = "insert into click_type_data(`date`,click_type,`times`) values('%s','%s',0)" %(dd, utf82gbk(ct[0]))
+                    self.cur.execute(sql)
+            except:
+                pk_log()
+                
+            #props_data
+            try:
+                self.cur.execute("select prop,type,subtype from props")
+                for prop,dtype,subtype in self.cur.fetchall():
+                    sql = "insert into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, utf82gbk(prop),dtype,utf82gbk(subtype))
+                    self.cur.execute(sql)
+            except:
+                pk_log()
+            
 
         
            
@@ -353,7 +373,8 @@ class DbUtil:
                 self.update_iap_data(ao)
                 self.update_economic(ao)
                 self.update_exception_data(ao)
-                
+                self.update_click_log(ao)
+                self.update_prop_log(ao)
             self.last_update()
             self.cur.close()
     '''
@@ -371,7 +392,7 @@ class DbUtil:
             if self.is_new_user(tobj) == True:
                 self.basic_userdata.reg_num = self.basic_userdata.reg_num + 1
             #更新用户渠道
-            self.update_channel(tobj.userName,tobj.channel)
+            self.update_channel(tobj.userName, tobj.channel)
             # 需要androidid每次安装后都生成不同的
             if self.is_new_install(tobj.uniqueID) == True:
                 self.basic_userdata.install_num = self.basic_userdata.install_num + 1
@@ -391,11 +412,6 @@ class DbUtil:
                         else:
                             lu = LogUser()
                         lu.is_logined = True
-                    #得到渠道的新增用户
-                    if self.uid_data.has_key(tobj.channel):
-                        self.uid_data[tobj.channel][0] = self.uid_data[tobj.channel][0] + 1
-                    else:
-                        self.uid_data[tobj.channel] = [1,0,0]
                     #userinfo_imei
                     sql = "insert into userinfo_imei(`androidid`,`username`,`nickname`,`sex`,`gold`,\
                     `total_pay`,`qreg`,`reg_date`) values('%s','%s','%s',%d,'%s','0',%d,'%s')"\
@@ -408,6 +424,13 @@ class DbUtil:
         if tobj.TAG == ACT_LOGIN:
             if is_robot(tobj.userName) == False:
                 self.basic_userdata.launch_time = self.basic_userdata.launch_time + 1
+                #得到用户的渠道信息，并保持各渠道的登陆次数
+                channel = self.get_channel_username(tobj.userName)
+                if self.uid_data.has_key(channel):
+                    self.uid_data[channel][1] = self.uid_data[channel][1] + 1
+                else:
+                    self.uid_data[channel] = [0,1,0]
+                
                 if self.is_logined(tobj.userName) == False:
                     if int(tobj.regType) <> 1:                             #登陆用户中去掉快速注册用户
                         self.basic_userdata.login_num = self.basic_userdata.login_num + 1
@@ -416,14 +439,8 @@ class DbUtil:
                         else:
                             lu = LogUser()
                         lu.is_logined = True
-                        #保存客户端信息
-                        #得到用户的渠道信息，并保持各渠道的登陆次数
-                        channel = self.get_channel_username(tobj.userName)
                         lu.channel = channel
-                        if self.uid_data.has_key(channel):
-                            self.uid_data[channel][1] = self.uid_data[channel][1] + 1
-                        else:
-                            self.uid_data[channel] = [0,1,0]
+                        #保存客户端信息
                         
                         if self.phone_info['network'].has_key(tobj.netInfo):
                             self.phone_info['network'][tobj.netInfo] = self.phone_info['network'][tobj.netInfo] + 1
@@ -560,8 +577,9 @@ class DbUtil:
                 sql = "update  new_pay_user set new_num=new_num+1 where `date`='%s'" %(self.parseday)
                 self.cur.execute(sql)
             #插入pay_detail
-            
-            sql = "replace into pay_detail(pid,username,nickname,paytime,mney) values('%s','%s','%s','%s',%f)" % (pid,tobj.userName,tobj.nickName,tobj.iap_time,rmbmoney)
+            pch = self.get_channel_username(tobj.userName)
+            sql = "replace into pay_detail(pid,username,nickname,paytime,mney,channel) values('%s','%s','%s','%s',%f,'%s')" \
+            %(pid,tobj.userName,tobj.nickName,tobj.iap_time,rmbmoney,pch)
             self.cur.execute(sql)
             if self.IS_ADD == True:
                 sql = "select count(username) as pcount from payboard where pid='%s'" %(pid)
@@ -616,6 +634,32 @@ class DbUtil:
             else:
                 self.exception_data[2][tobj.netInfo] = 1
             
+    def update_click_log(self, tobj):
+        """更新点击记录
+        """
+        clickName = tobj.clickName
+        self.cur.execute("replace into click_types(`click_type`) values('%s')" % clickName)
+        if self.click_data.has_key(clickName):
+            self.click_data[clickName] = self.click_data[clickName] + tobj.clickAddTime
+        else:
+            self.click_data[clickName] = tobj.clickAddTime
+     
+    def update_prop_log(self, tobj):
+        """更新道具记录
+        """
+        itemLogType = tobj.itemLogType
+        itemLogSubType = tobj.itemLogSubType
+        itemName = tobj.itemName
+        self.cur.execute("replace into props(`prop`,`type`,`subtype`) values('%s',%d,'%s')" %(itemName,itemLogType,itemLogSubType))
+        prop_key = "%s_%d_%s" %(itemName,itemLogType,itemLogSubType)
+        if self.prop_data.has_key(prop_key):
+            self.prop_data[prop_key] = self.prop_data[prop_key] + tobj.itemCount
+        else:
+            self.prop_data[prop_key] = tobj.itemCount
+        
+        
+        
+        
     """
     
     ###########################################################################################################
@@ -664,6 +708,10 @@ class DbUtil:
         self.count_exception_data()
         #统计渠道数据
         self.count_channel_data()
+        #统计点击事件数据
+        self.count_click_data()
+        #统计道具记录
+        self.count_prop_data()
     
     def count_honline(self):
         """统计历史在线
@@ -916,7 +964,7 @@ class DbUtil:
                     max_net[0] = nk
                     max_net[1] = nv
         crash_time = self.exception_data[3]
-        crash_rate = crash_time *1.0 / self.basic_userdata.login_num
+        crash_rate = crash_time *1.0 / self.basic_userdata.launch_time
         sql = "update exception_data set crash_time=%d,crash_rate=%.2f,crash_os='%s',crash_phone='%s',crash_network='%s' \
         where `date`='%s'" % (crash_time,crash_rate,max_os[0],max_phone[0],max_net[0],self.parseday)
         self.cur.execute(sql)            
@@ -924,17 +972,60 @@ class DbUtil:
     def count_channel_data(self):
         """统计渠道数据
         """    
+        #得到渠道新增用户
+        self.cur.execute("select count(channel) ucount,channel from userinfo where reg_date='%s' group by channel" %(self.parseday))
+        for ucount,channel in self.cur.fetchall():
+            if self.uid_data.has_key(channel) == False:
+                self.uid_data[channel] = [ucount,0,0]
+            else:
+                self.uid_data[channel][0] = ucount
         #得到渠道登陆用户
         for lk in self.log_users:
             if is_robot(lk) == True:
                 continue
-            self.uid_data[lk.channel][2] = self.uid_data[lk.channel][2] + 1
+            lu = self.log_users[lk]
+            self.uid_data[lu.channel][2] = self.uid_data[lu.channel][2] + 1
+        pass
         
         #归总所有的数据
         for ud in self.uid_data:
             sql = "update uid_data set new_user=%d,launch_time=%d,login_user=%d where `date`='%s' and uid='%s'"\
              %(self.uid_data[ud][0],self.uid_data[ud][1],self.uid_data[ud][2],self.parseday,ud)
             self.cur.execute(sql)
+    
+    def count_click_data(self):
+        """统计点击事件数据
+        """
+        for dd in self.gendates:
+            try:
+                self.cur.execute("select click_type from click_types")
+                for ct in self.cur.fetchall():
+                    sql = "insert into click_type_data(`date`,click_type,`times`) values('%s','%s',0)" %(dd, utf82gbk(ct[0]))
+                    self.cur.execute(sql)
+            except:
+                pk_log()
+                    
+        for cl in self.click_data:
+            self.cur.execute("update click_type_data set times=%d where `date`='%s' and `click_type`='%s'" %(self.click_data[cl],self.parseday,cl))
+    
+    def count_prop_data(self):
+        """统计道具记录数据
+        """
+        for dd in self.gendates:
+            try:
+                self.cur.execute("select prop,type,subtype from props")
+                for prop,dtype,subtype in self.cur.fetchall():
+                    sql = "insert into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, utf82gbk(prop),dtype,utf82gbk(subtype))
+                    self.cur.execute(sql)
+            except:
+                pk_log()
+        
+        for pk in self.prop_data:
+            pks = pk.split("_")
+            if len(pks) == 3:
+                sql = "update props_data set count=%d where prop='%s' and `type`=%d and `subtype`='%s'" %(self.prop_data[pk], pks[0], int(pks[1]),pks[2])
+                self.cur.execute(sql)
+                
     """
     
     #################################工具类方法###################################################
@@ -1168,7 +1259,12 @@ class DbUtil:
         self.cur.execute(sql)
         row = self.cur.fetchone()
         if row <> None:
-            return row[0]
+            channel = row[0]
+            """数据库里面保存的字符是以UTF8保存的，所以这里要显示的转换为脚本所用的编码
+            -  不然就是错
+            """
+            channel = channel.decode('UTF-8').encode('GBK')
+            return channel
     
     def update_uid_data(self,):
         """更新渠道数据

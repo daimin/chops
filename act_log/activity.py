@@ -254,11 +254,7 @@ money                  整数                           产品金钱
 userOdlMney            整数                           购买前玩家的金钱
 userNewMney            整数                           购买后玩家的金钱
 IAP_ID                 字符串                         IAP数据
-vip                    整数                           产品带的vip等级:
-                                                        0.此产品非vip产品 
-                                                        1.vip等级1
-                                                        2.vip等级2
-                                                        3.vip等级3
+diamond                整数                           产品钻石数量
 price                  浮点数                         价格(RMB)
 
 示例：
@@ -294,6 +290,8 @@ EXPEND_USER_CHARGE      = 2005                  # USER充值加钱
 EXPEND_GM_SEND_USER     = 2006                  # GM给予USER钱
 EXPEND_USER_TASK_DONE   = 2007                  # USER完成任务
 EXPEND_USER_ACHI_DONE   = 2008                  # USER完成成就
+EXPAND_DIAMOND_2_MONEY  = 2009                  # 钻石兑换金币
+EXPAND_ETERNAL_TIPS     = 2010                  # 免死符补贴玩家
 # 子类型: USER之间收支类(3000 - 3999):
 EXCHANGE_USER_LOSE_USER = 3000                  # USER输USER(抽水前)
 EXCHANGE_USER_WIN_USER  = 3001                  # USER净赢USER(抽水后)
@@ -337,6 +335,34 @@ ClickAddTime            整数                              新增点击次数
 
 示例:
     234912,15,binggo0,大厅快速充值,2
+"""
+
+ACT_ITEM_LOG            = 16    # 道具记录(包括钻石)
+# 类型
+ITEM_GOT                = 1                     # 玩家获得道具
+ITEM_COST               = 2                     # 玩家消耗道具
+# 子类型: 获得
+GOT_CHARGE              = "充值获得"
+GOT_SHOP                = "商店购买"
+GOT_GM_SEND             = "GM给予"
+# 子类型: 消耗
+COST_SHOP               = "商店消耗"
+COST_USE                = "主动使用"
+COST_GM_RECOVER         = "GM收回"
+COST_PASSIVE            = "被动使用"
+"""
+格式字段:               类型                              说明
+UserName                字符串                            用户名
+ItemLogType             整数                              类型
+ItemLogSubType          字符串                            子类型
+ItemName                字符串                            道具名
+ItemCount               整数                              道具数量
+
+示例:
+    234912,16,binggo0,1,充值获得,钻石,100
+    234912,16,binggo0,2,商店消耗,钻石,20
+    234912,16,binggo0,1,商店购买,PK令,1
+    234913,16,binggo0,2,使用消耗,PK令,1
 """
 
 
