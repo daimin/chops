@@ -81,9 +81,10 @@ SystemLang              字符串                         系统语言
 ResInfo                 字符串                         玩家终端分辨率
 MachineNo               字符串                         玩家终端机器型号
 NetInfo                 字符串                         玩家终端联网方式
+Channel                 字符串                         用户渠道包名.空表示未知
 
 示例：
-    182339,2,127.0.0.1,3104,localhost2235,_i.robot_77461,1,0,0.0.0,Python 2.6.5,Chinese,1920x1080,BenQ G2222HD,Enternet
+    182339,2,127.0.0.1,3104,localhost2235,_i.robot_77461,1,0,0.0.0,Python 2.6.5,Chinese,1920x1080,BenQ G2222HD,Enternet,gogiu
 '''
 
 ACT_ONLINE              = 3     # 在线玩家,定时触发
@@ -290,8 +291,9 @@ EXPEND_USER_CHARGE      = 2005                  # USER充值加钱
 EXPEND_GM_SEND_USER     = 2006                  # GM给予USER钱
 EXPEND_USER_TASK_DONE   = 2007                  # USER完成任务
 EXPEND_USER_ACHI_DONE   = 2008                  # USER完成成就
-EXPAND_DIAMOND_2_MONEY  = 2009                  # 钻石兑换金币
-EXPAND_ETERNAL_TIPS     = 2010                  # 免死符补贴玩家
+EXPEND_DIAMOND_2_MONEY  = 2009                  # 钻石兑换金币
+EXPEND_ETERNAL_TIPS     = 2010                  # 免死符补贴玩家
+EXPEND_ITEM_MONEY       = 2011                  # 购买道具赠送金钱
 # 子类型: USER之间收支类(3000 - 3999):
 EXCHANGE_USER_LOSE_USER = 3000                  # USER输USER(抽水前)
 EXCHANGE_USER_WIN_USER  = 3001                  # USER净赢USER(抽水后)
@@ -366,17 +368,21 @@ ItemCount               整数                              道具数量
 """
 
 
+ACT_GM_LOG              = 17    # GM操作记录
+"""
+格式字段:               类型                              说明
+gmname                  字符串                            gm名
+command                 字符串                            gm指令
+
+示例:
+    234912,17,binggo,schedule 201201010000 5 201512311200 broadcast 这是一个系统公告ok
+    
+备注:
+    1.公告栏文件内容不记录.
+    2.去掉指令结尾的\r\n\r\n.
+"""
+
+
 ##########################################################################################
 
-'''
-接口包：
-    import activity
-    from log import log_activity
-
-接口函数：
-    log_activity(fmt, *args)tt
-
-例子：
-    log_activity("%d,%s",activity.ACT_***,"value")
-'''
 

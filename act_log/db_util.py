@@ -637,25 +637,29 @@ class DbUtil:
     def update_click_log(self, tobj):
         """更新点击记录
         """
-        clickName = tobj.clickName
-        self.cur.execute("replace into click_types(`click_type`) values('%s')" % clickName)
-        if self.click_data.has_key(clickName):
-            self.click_data[clickName] = self.click_data[clickName] + tobj.clickAddTime
-        else:
-            self.click_data[clickName] = tobj.clickAddTime
+        if tobj.TAG == ACT_CLICK_LOG:
+            clickName = tobj.clickName
+            self.cur.execute("replace into click_types(`click_type`) values('%s')" % clickName)
+            if self.click_data.has_key(clickName):
+                self.click_data[clickName] = self.click_data[clickName] + tobj.clickAddTime
+            else:
+                self.click_data[clickName] = tobj.clickAddTime
      
     def update_prop_log(self, tobj):
         """更新道具记录
         """
-        itemLogType = tobj.itemLogType
-        itemLogSubType = tobj.itemLogSubType
-        itemName = tobj.itemName
-        self.cur.execute("replace into props(`prop`,`type`,`subtype`) values('%s',%d,'%s')" %(itemName,itemLogType,itemLogSubType))
-        prop_key = "%s_%d_%s" %(itemName,itemLogType,itemLogSubType)
-        if self.prop_data.has_key(prop_key):
-            self.prop_data[prop_key] = self.prop_data[prop_key] + tobj.itemCount
-        else:
-            self.prop_data[prop_key] = tobj.itemCount
+        if tobj.TAG == ACT_ITEM_LOG:
+            itemLogType = tobj.itemLogType
+            itemLogSubType = tobj.itemLogSubType
+            itemName = tobj.itemName
+            sql = "replace into props(`prop`,`type`,`subtype`) values('%s',%d,'%s')" %(itemName,itemLogType,itemLogSubType)
+            
+            self.cur.execute(sql)
+            prop_key = "%s_%d_%s" %(itemName,itemLogType,itemLogSubType)
+            if self.prop_data.has_key(prop_key):
+                self.prop_data[prop_key] = self.prop_data[prop_key] + tobj.itemCount
+            else:
+                self.prop_data[prop_key] = tobj.itemCount
         
         
         
@@ -1015,7 +1019,10 @@ class DbUtil:
             try:
                 self.cur.execute("select prop,type,subtype from props")
                 for prop,dtype,subtype in self.cur.fetchall():
-                    sql = "insert into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, utf82gbk(prop),dtype,utf82gbk(subtype))
+                    #prop = utf82gbk(prop)
+                    #subtype = utf82gbk(subtype)
+                    sql = "insert into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, prop,dtype,subtype)
+                    print sql
                     self.cur.execute(sql)
             except:
                 pk_log()
@@ -1023,7 +1030,7 @@ class DbUtil:
         for pk in self.prop_data:
             pks = pk.split("_")
             if len(pks) == 3:
-                sql = "update props_data set count=%d where prop='%s' and `type`=%d and `subtype`='%s'" %(self.prop_data[pk], pks[0], int(pks[1]),pks[2])
+                sql = "update props_data set count=%d where prop='%s' and `type`=%d and `subtype`='%s' and `date`='%s'" %(self.prop_data[pk], pks[0], int(pks[1]),pks[2],self.parseday)
                 self.cur.execute(sql)
                 
     """
