@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;laner/views/diary/index.jade&apos; to &apos;list.jade&apos;" description="Rename resource &apos;index.jade&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="views/diary/index.jade" name="list.jade" stamp="1346230536218" updateReferences="true"/>
+</session>

@@ -34,6 +34,14 @@ class LogUser:
     lang            = ""                   #系统语言
     version         = ""                   #客户端程序的版本
     
+class PayUser:
+    """首日注册未付费用户
+    """
+    def __init__(self):
+        self.is_clear = False
+        self.is_alms = False
+        pass
+    
     
     
     

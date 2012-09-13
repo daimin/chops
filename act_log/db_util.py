@@ -52,6 +52,7 @@ class DbUtil:
     min_time = ['',0]                     # 当日在线用户量最小的时段，元素1是时间段表示，元素2是在线用户量
      
     log_users = {}                        # 内建字典用于此次处理过程中的用户
+    reg_users = {}                        # 保存所有的注册用户
     
     # 机器人统计数据
     # 元素分别是总局数、一副牌局数、两副牌局数、总赢局数、一副牌赢局数、两副牌赢局数、赢金钱、输金钱
@@ -115,7 +116,7 @@ class DbUtil:
     #                                          番数总数，第四个记录一副牌的记录数
     
    
-    iap_users = {}                           # iap用户记录 分别记录 键为用户名加时间，值为金额
+    iap_users = {}                           # iap用户记录 分别记录 键为用户名，值为金额
     
     iap_time = 0                             # iap付费次数
     
@@ -132,6 +133,10 @@ class DbUtil:
     click_data = {}                          #点击事件数据
     
     prop_data = {}                           #道具记录数据
+
+    nopayuser_clear = []                     # 数组，粮饷用户名
+    nopayuser_alms = []                      # 数组，清空用户名
+    
 ################################################## 函数 ##############################################################################
 
 
@@ -283,12 +288,14 @@ class DbUtil:
                 pk_log()
             """
             # uid_data
+            """
             try:
                 self.cur.execute("select uid from uids")
                 for uid in self.cur.fetchall():
                     self.cur.execute("insert into uid_data(`date`,`uid`,`new_user`,`launch_time`,`login_user`)values('%s','%s',0,0,0)" % (dd, uid[0]))
             except:
                 pk_log()
+            """
             # basic_revenue_data
             try:
                 self.cur.execute("insert into basic_revenue_data(`date`,`gain_gold`,`pay_num`,`pay_time`)values('%s',0,0,0)" % (dd))
@@ -346,7 +353,27 @@ class DbUtil:
                     self.cur.execute(sql)
             except:
                 pk_log()
+                
+            #reg_nopay
+            try:
+                sql = "insert into reg_nopay(`date`,`num`,`rate_1`,`rate_2`,`rate_3`,`week_rate`) values('%s',0,0.0,0.0,0.0,0.0)" %(dd)
+                self.cur.execute(sql)
+            except:
+                pk_log()
             
+            #reg_nopay_alms
+            try:
+                sql = "insert into reg_nopay_alms(`date`,`num`,`rate_1`,`rate_2`,`rate_3`,`week_rate`) values('%s',0,0.0,0.0,0.0,0.0)" %(dd)
+                self.cur.execute(sql)
+            except:
+                pk_log()
+
+            #reg_nopay_clear
+            try:
+                sql = "insert into reg_nopay_clear(`date`,`num`,`rate_1`,`rate_2`,`rate_3`,`week_rate`) values('%s',0,0.0,0.0,0.0,0.0)" %(dd)
+                self.cur.execute(sql)
+            except:
+                pk_log()
 
         
            
@@ -389,8 +416,12 @@ class DbUtil:
             iqreg = int(tobj.regType)
             if iqreg == 1:
                 self.basic_userdata.guest_num = self.basic_userdata.guest_num + 1
-            if self.is_new_user(tobj) == True:
+            else:            
+                #if self.is_new_user(tobj) == True:                 #不需要判断,客户端已做判断
                 self.basic_userdata.reg_num = self.basic_userdata.reg_num + 1
+                #保存所有的注册用户的用户名
+                self.reg_users[tobj.userName] = PayUser()
+                    
             #更新用户渠道
             self.update_channel(tobj.userName, tobj.channel)
             # 需要androidid每次安装后都生成不同的
@@ -405,6 +436,7 @@ class DbUtil:
                     iqreg,tobj.channel, self.parseday)
                     self.cur.execute(sql)
                     #注册用户也算一个登陆用户
+                    """
                     if self.is_logined(tobj.userName) == False:
                         self.basic_userdata.login_num = self.basic_userdata.login_num + 1
                         if self.log_users.has_key(tobj.userName):
@@ -412,6 +444,7 @@ class DbUtil:
                         else:
                             lu = LogUser()
                         lu.is_logined = True
+                    """
                     #userinfo_imei
                     sql = "insert into userinfo_imei(`androidid`,`username`,`nickname`,`sex`,`gold`,\
                     `total_pay`,`qreg`,`reg_date`) values('%s','%s','%s',%d,'%s','0',%d,'%s')"\
@@ -484,6 +517,7 @@ class DbUtil:
                         self.log_users[tobj.userName] = lu
             #更新排行榜中的最后登录时间
             self.updatePayBoardLoginTime(tobj.userName, tobj.login_time) 
+            self.updateUserTimesLoginTime(tobj.userName, tobj.login_time)
                 
             
     def history_online(self, tobj):
@@ -515,6 +549,7 @@ class DbUtil:
             #更新userinfo表的title字段
             sql = "update userinfo set title=%d where username='%s'" % (title,tobj.userName)
             self.cur.execute(sql)
+            
             #不需要收集用户等级信息
             #if self.log_users.has_key(tobj.userName) == True:
             #    self.log_users[tobj.userName].grade = tobj.title
@@ -567,7 +602,7 @@ class DbUtil:
             
             rmbmoney = float(tobj.price)
             #print "username=%s, money=%f" % (tobj.userName, rmbmoney)
-            #gold,pay_time,total_pay在userinfo中
+            #gold,pay_time,total_pay,last_在userinfo中
             sql = "update userinfo set pay_time=pay_time+1,gold=%d,total_pay=total_pay+%f where username='%s'"\
              % (int(tobj.userNewMney),rmbmoney,tobj.userName)
             self.cur.execute(sql)
@@ -612,6 +647,15 @@ class DbUtil:
                 self.sys_ecm_data[0] = self.sys_ecm_data[0] + int(tobj.amount)
             elif itype == ECONOMIC_EXPEND:
                 self.sys_ecm_data[1] = self.sys_ecm_data[1] + int(tobj.amount)
+            #更新玩家的金钱
+            if is_robot(tobj.user) == False:
+                self.cur.execute("update userinfo set gold='%s' where username='%s'" % (tobj.money, tobj.user))
+                    
+                        #找出首日注册不付费被清空和首日不付费领粮饷的用户
+                if int(tobj.sub_type) == EXPEND_USER_DAILY_BONUS :
+                    self.nopayuser_alms.append(tobj.user)
+                if int(tobj.money) == 0:
+                    self.nopayuser_clear.append(tobj.user)
                 
     def update_exception_data(self, tobj):
         """统计异常崩溃数据
@@ -652,18 +696,32 @@ class DbUtil:
             itemLogType = tobj.itemLogType
             itemLogSubType = tobj.itemLogSubType
             itemName = tobj.itemName
-            sql = "replace into props(`prop`,`type`,`subtype`) values('%s',%d,'%s')" %(itemName,itemLogType,itemLogSubType)
-            
+            propName = itemName
+            if itemName == '钻石':
+                #保存钻石到userinfo
+                self.update_user_diamond(tobj.userName,itemLogType,tobj.itemCount)
+                propName = "%s%d" % (itemName,tobj.itemCount)
+            sql = "replace into props(`prop`,`type`,`subtype`) values('%s',%d,'%s')" %(propName,itemLogType,itemLogSubType)
             self.cur.execute(sql)
-            prop_key = "%s_%d_%s" %(itemName,itemLogType,itemLogSubType)
+            prop_key = "%s_%d_%s" %(propName,itemLogType,itemLogSubType)
             if self.prop_data.has_key(prop_key):
                 self.prop_data[prop_key] = self.prop_data[prop_key] + tobj.itemCount
             else:
                 self.prop_data[prop_key] = tobj.itemCount
-        
-        
-        
-        
+            #道具信息收集
+            if itemLogType == ITEM_GOT:
+                self.cur.execute("select count(*) as dcount from props_info where username='%s' and itemname='%s'" %(tobj.userName,tobj.itemName))
+                dcount = self.cur.fetchone()
+                if dcount[0] > 0:
+                    self.cur.execute("update props_info set itemcount=itemcount+%d where username='%s' and itemname='%s'" %(tobj.itemCount,tobj.userName,tobj.itemName))
+                else:
+                    self.cur.execute("replace into props_info(`username`,`itemname`,`itemcount`,`date`) values('%s','%s',%d,'%s')" %(tobj.userName,tobj.itemName,tobj.itemCount,self.parseday))
+            else:
+                self.cur.execute("select count(*) as dcount from props_info where username='%s' and itemname='%s'" %(tobj.userName,tobj.itemName))
+                dcount = self.cur.fetchone()
+                if dcount[0] > 0:
+                    self.cur.execute("update props_info set itemcount=itemcount-%d where username='%s' and itemname='%s'" %(tobj.itemCount,tobj.userName,tobj.itemName))
+                
     """
     
     ###########################################################################################################
@@ -716,6 +774,8 @@ class DbUtil:
         self.count_click_data()
         #统计道具记录
         self.count_prop_data()
+        #统计首日注册未付费率
+        self.count_nopay()
     
     def count_honline(self):
         """统计历史在线
@@ -785,7 +845,7 @@ class DbUtil:
         """汇总处理用户等级分布
         """
         pass
-        #不需要统计用户等级，直接从userinfo中读取即可
+        #不需要统计用户等级，直接从userinfo中
         #得到self.user_grade_data
         #for lk in self.log_users:
         #    lu = self.log_users[lk]
@@ -834,12 +894,35 @@ class DbUtil:
             self.cur.execute(sql)
         
         #更新得到首日的注册用户的值
+        """
         sql = "select c.reg_date, count(c.reg_date) as rnum from (select a.reg_date,a.username from userinfo a inner join\
             ( select distinct DATE_FORMAT(paytime,'%Y-%m-%d') as paydate,username from pay_detail) b on a.reg_date=b.paydate and \
-            a.username=b.username) c group by c.reg_date;"
+            a.username<>b.username) c group by c.reg_date;"
         self.cur.execute(sql)
         for reg_date,rnum in self.cur.fetchall():
             self.cur.execute("update new_pay_user set new_reg_num=%d where `date`='%s'" %(rnum,reg_date.strftime("%Y-%m-%d")))
+            self.cur.execute("select count(`reg_date`) from userinfo where `reg_date`='%s'" %(reg_date.strftime("%Y-%m-%d")))
+            regcount = self.cur.fetchone()
+            self.cur.execute("update reg_nopay set num=%d where `date`='%s'" %(regcount, reg_date.strftime("%Y-%m-%d")))
+        """
+        #修改首日注册用户的计算方法
+        for iapuser in self.iap_users:
+            if self.reg_users.has_key(iapuser):
+                self.reg_users.pop(iapuser)
+        
+        #首日注册付费用户
+        self.cur.execute("update new_pay_user set new_reg_num=%d where `date`='%s'" %(self.basic_userdata.reg_num - len(self.reg_users),self.parseday))
+        
+        #保存所有的首日注册不付费用户
+        #根据在前面保存的值得到首日注册不付费被清空和首日注册不付费领粮饷的用户
+        for rk in self.reg_users:
+            is_clear = 0
+            is_alms = 0
+            if self.nopayuser_alms.count(rk) > 0:
+                is_alms = 1
+            if self.nopayuser_clear.count(rk) > 0:
+                is_clear = 1
+            self.cur.execute("replace into no_payuser(`username`,`reg_date`,`is_clear`,`is_alms`) values('%s','%s',%d,%d)" %(rk,self.parseday,is_clear,is_alms))    
                 
     def count_phoneinfo(self):
         #更新手机信息的相关的表格
@@ -869,34 +952,34 @@ class DbUtil:
                 try:
                     self.cur.execute("select network from networks")
                     for nw in self.cur.fetchall():
-                        self.cur.execute("insert into network_data(`date`,`type`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, nw[0]))
+                        self.cur.execute("replace into network_data(`date`,`type`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, nw[0]))
                 except:
                     pk_log()
                     
                 try:
                     self.cur.execute("select os from os")
                     for os in self.cur.fetchall():
-                        self.cur.execute("insert into android_data(`date`,`os`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, os[0]))
+                        self.cur.execute("replace into android_data(`date`,`os`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, os[0]))
                 except:
                     pk_log()
                 try:
                     self.cur.execute("select mobile from mobiles")
                     for mb in self.cur.fetchall():
-                        self.cur.execute("insert into mobile_data(`date`,`mobile`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, mb[0]))
+                        self.cur.execute("replace into mobile_data(`date`,`mobile`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, mb[0]))
                 except:
                     pk_log()
            
                 try:
                     self.cur.execute("select pixel from pixels")
                     for px in self.cur.fetchall():
-                        self.cur.execute("insert into pixel_data(`date`,`pixel`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, px[0]))
+                        self.cur.execute("replace into pixel_data(`date`,`pixel`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, px[0]))
                 except:
                     pk_log()
                     
                 try:
                     self.cur.execute("select lang from langs")
                     for px in self.cur.fetchall():
-                        self.cur.execute("insert into lang_data(`date`,`lang`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, px[0]))
+                        self.cur.execute("replace into lang_data(`date`,`lang`,`account_num`,`imei_num`)values('%s','%s',0,0)" % (dd, px[0]))
                 except:
                     pk_log()
                     
@@ -990,7 +1073,15 @@ class DbUtil:
             lu = self.log_users[lk]
             self.uid_data[lu.channel][2] = self.uid_data[lu.channel][2] + 1
         pass
-        
+        #更新UID统计表
+        for dd in self.gendates:
+            try:
+                self.cur.execute("select uid from uids")
+                for uid in self.cur.fetchall():
+                    self.cur.execute("replace into uid_data(`date`,`uid`,`new_user`,`launch_time`,`login_user`)values('%s','%s',0,0,0)" % (dd, uid[0]))
+            except:
+                pk_log()
+                
         #归总所有的数据
         for ud in self.uid_data:
             sql = "update uid_data set new_user=%d,launch_time=%d,login_user=%d where `date`='%s' and uid='%s'"\
@@ -1004,7 +1095,7 @@ class DbUtil:
             try:
                 self.cur.execute("select click_type from click_types")
                 for ct in self.cur.fetchall():
-                    sql = "insert into click_type_data(`date`,click_type,`times`) values('%s','%s',0)" %(dd, utf82gbk(ct[0]))
+                    sql = "replace into click_type_data(`date`,click_type,`times`) values('%s','%s',0)" %(dd, utf82gbk(ct[0]))
                     self.cur.execute(sql)
             except:
                 pk_log()
@@ -1016,22 +1107,51 @@ class DbUtil:
         """统计道具记录数据
         """
         for dd in self.gendates:
-            try:
-                self.cur.execute("select prop,type,subtype from props")
-                for prop,dtype,subtype in self.cur.fetchall():
-                    #prop = utf82gbk(prop)
-                    #subtype = utf82gbk(subtype)
-                    sql = "insert into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, prop,dtype,subtype)
-                    print sql
+            self.cur.execute("select prop,type,subtype from props")
+            for prop,dtype,subtype in self.cur.fetchall():
+                #prop = utf82gbk(prop)
+                #subtype = utf82gbk(subtype)
+                try:
+                    sql = "replace into props_data(`date`,prop,`type`,`subtype`,`count`) values('%s','%s','%d','%s',0)" %(dd, prop,dtype,subtype)
                     self.cur.execute(sql)
-            except:
-                pk_log()
+                except:
+                    pk_log()
         
         for pk in self.prop_data:
             pks = pk.split("_")
             if len(pks) == 3:
                 sql = "update props_data set count=%d where prop='%s' and `type`=%d and `subtype`='%s' and `date`='%s'" %(self.prop_data[pk], pks[0], int(pks[1]),pks[2],self.parseday)
                 self.cur.execute(sql)
+                
+    def count_nopay(self):
+        """首日注册未付费率
+        """
+        #前推3天得到 比如今天9月6日，可以得到9月5日的次日回访率，9月4日的次日和三日回访率，9月3日的次日、3日和4日的回访率
+        pdate = datetime.datetime.strptime(self.parseday, "%Y-%m-%d")
+        for st in range(1,3):
+            cdate = pdate - datetime.timedelta(days = st )
+            csdate =  cdate.strftime("%Y-%m-%d")
+            user_num = user_num_return = clear_num = clear_num_return = alms_num = alms_num_return = 0
+
+            query = "select username,is_clear,is_alms from no_payuser where reg_date='%s'" % (csdate)
+            self.cur.execute(query)
+            for username,is_clear,is_alms  in self.cur.fetchall():
+                user_num = user_num + 1
+                if is_clear == 1:
+                    clear_num = clear_num + 1
+                if is_alms == 1:
+                    alms_num = alms_num + 1
+                if self.log_users.has_key(username[0]):
+                    user_num_return = user_num_return + 1
+                    if is_clear == 1:
+                        clear_num_return = clear_num_return + 1
+                    if is_alms == 1:
+                        alms_num_return = alms_num_return + 1
+            if user_num <= 0:
+                continue;
+            self.cur.execute("update reg_nopay set num=%d,rate_%d=%f where `date`='%s'" % (user_num,st,user_num_return*1.0/user_num,csdate))
+            self.cur.execute("update reg_nopay_clear set num=%d,rate_%d=%f where `date`='%s'" % (clear_num,st,clear_num_return*1.0/clear_num,csdate))
+            self.cur.execute("update reg_nopay_alms set num=%d,rate_%d=%f where `date`='%s'" % (alms_num,st,alms_num_return*1.0/alms_num,csdate))
                 
     """
     
@@ -1156,7 +1276,6 @@ class DbUtil:
         #dround = int(dround)
         AIFlag = int(AIFlag)
         tile_count = int(tile_count)
-        # 总局数、一副牌局数、一副牌平均番、两副牌局数、两副牌平均番、押宝次数、机器人局数
         self.product_data_arr[0] = self.product_data_arr[0] + 1
         if AIFlag <> 0:
             self.product_data_arr[6] = self.product_data_arr[6] + 1
@@ -1183,6 +1302,13 @@ class DbUtil:
         """
         sql = "update payboard set last_login='%s' where username='%s'" % (logintime,userName)
         self.cur.execute(sql)
+        
+    def updateUserTimesLoginTime(self,userName,logintime):
+        """更新用户的最后登录时间
+        """
+        if is_robot(userName) == False:
+            self.cur.execute("replace into usertimes(`username`) values('%s')" % (userName))
+            self.cur.execute("update usertimes set last_logtime='%s' where username='%s'" % (logintime,userName))
 
     def count_economic(self):
         """更新系统收支记录数据
@@ -1276,6 +1402,15 @@ class DbUtil:
     def update_uid_data(self,):
         """更新渠道数据
         """
+        pass
+    
+    def update_user_diamond(self,userName,ptype,dcount):
+        """更新用户的钻石数
+        """
+        if ptype == ITEM_GOT:
+            self.cur.execute("update userinfo set diamond=diamond+%d where username='%s'" %(dcount,userName))
+        else:
+            self.cur.execute("update userinfo set diamond=diamond-%d where username='%s'" %(dcount,userName))
         
  
         

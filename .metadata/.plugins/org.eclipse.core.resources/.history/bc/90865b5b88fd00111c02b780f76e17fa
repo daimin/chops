@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title>{{ mytitle }}</title>
+        <link rel="stylesheet" type="text/css" href="/css/base.css" />
+        <script type="text/javascript" src="/js/jquery/jquery-1.4.4.min.js"></script>
+        <script language="javascript" type="text/javascript">
+            $(document).ready(function(){
+                $('#btn_down').bind( 'click', move_txt_down );
+                $('#btn_up').bind( 'click', move_txt_up );
+                $('#btn_fadeIn').bind( 'click', fade_img_in );
+                $('#btn_fadeOut').bind( 'click', fade_img_out );
+            });
+ 
+            function move_txt_down(){
+                $('#txt').animate({left:100,top:500 }, 'slow');
+            }
+            function move_txt_up(){
+                $('#txt').animate({left:100,top:150 }, 'slow');
+            }
+            function fade_img_in(){
+                $('#logo1').fadeIn('slow');
+            }
+            function fade_img_out(){
+                $('#logo1').fadeOut('slow');
+            }
+        </script>
+    </head>
+    <body>
+    <h1>My Resource Test</h1>
+    <input type="button" name="btn" id="btn_down" value="Move the text down"/>
+    <input type="button" name="btn" id="btn_up" value="Move the text up"/>
+    <input type="button" name="btn" id="btn_fadeIn" value="Fade the logo in"/>
+    <input type="button" name="btn" id="btn_fadeOut" value="Fade the logo out"/>
+    <br />
+    <img src="/images1/Logo1.gif" alt="logo1" id="logo1" />
+    <div id="txt" style="position: absolute;left:100px;top:150px;">this is the text for move</div>  
+    </body>
+</html>

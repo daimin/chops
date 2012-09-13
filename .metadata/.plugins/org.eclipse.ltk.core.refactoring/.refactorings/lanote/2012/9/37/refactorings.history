@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;lanote/Templates&apos; to &apos;templates&apos;" description="Rename resource &apos;Templates&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Templates" name="templates" stamp="1347525212604" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;lanote/lanote/images/未标题-1.png&apos; to &apos;Logo1.gif&apos;" description="Rename resource &apos;未标题-1.png&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="lanote/images/未标题-1.png" name="Logo1.gif" stamp="1347529857143" updateReferences="true"/>
+</session>

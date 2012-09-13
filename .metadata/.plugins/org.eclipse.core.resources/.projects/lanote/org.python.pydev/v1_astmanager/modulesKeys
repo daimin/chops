@@ -1,0 +1,8 @@
+MODULES_MANAGER_V2
+lanote.__init__|D:\www\pyscripts\chops\lanote\lanote\__init__.py
+lanote.models|D:\www\pyscripts\chops\lanote\lanote\models.py
+lanote.settings|D:\www\pyscripts\chops\lanote\lanote\settings.py
+lanote.urls|D:\www\pyscripts\chops\lanote\lanote\urls.py
+lanote.view|D:\www\pyscripts\chops\lanote\lanote\view.py
+lanote.wsgi|D:\www\pyscripts\chops\lanote\lanote\wsgi.py
+manage|D:\www\pyscripts\chops\lanote\manage.py

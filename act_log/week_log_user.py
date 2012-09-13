@@ -32,6 +32,7 @@ class WeekLogUser(object):
             logfile.close()
         
         self.up_week_user_count()
+        del logs
     
     def get_log_file(self,parseday):
         logs = []
