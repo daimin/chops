@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+# -*- coding:UTF-8 -*-   
+#encoding=utf-8
 from django.http import HttpResponse
+from django.template import loader, Context
+from lanote.models import Diary
 
-def hello(request):
-    return HttpResponse("Hello world")
+def archive(request):
+    diarys = Diary.objects.all().order_by("-updatetime")
+    t = loader.get_template("archive.html")
+    c = Context({ 'diarys': diarys })
+    return HttpResponse(t.render(c))
     
-def hours_ahead(request, offset):
-    offset = int(offset)
-    dt = datetime.datetime.now() + datetime.timedelta(hours=offset)
-    html = "<html><body>In %s hour(s), it will be %s.</body></html>" % (offset, dt)
-    return HttpResponse(html)
