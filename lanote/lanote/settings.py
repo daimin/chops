@@ -2,6 +2,8 @@
 # -*- coding:UTF-8 -*-   
 #encoding=utf-8
 # Django settings for lanote project.
+import os
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -55,21 +57,29 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
 
+
+
+# 下面3个变量配置静态资源
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+# 配置静态资源目录所在的根目录(其上一级目录)
+STATIC_ROOT = os.path.dirname(__file__).replace("\\", "/")
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+# 匹配的url
+STATIC_URL = '/public/'
 
+# 静态资源的物理路径
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.dirname(__file__).replace("\\", "/")+"/public",
+    os.path.dirname(__file__).replace("\\", "/")+"/public/images",
 )
 
 # List of finder classes that know how to find static files in
@@ -154,3 +164,4 @@ LOGGING = {
         },
     }
 }
+

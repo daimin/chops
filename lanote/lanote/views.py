@@ -10,4 +10,9 @@ def archive(request):
     t = loader.get_template("archive.html")
     c = Context({ 'diarys': diarys })
     return HttpResponse(t.render(c))
+
+def index(request):
+    t = loader.get_template("index.html")
+    ctx = Context()
+    return HttpResponse(t.render(ctx))
     

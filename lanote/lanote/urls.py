@@ -6,6 +6,7 @@ from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from views import *
+from settings import STATIC_URL
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -15,18 +16,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-        
-    url( r'^js/(?P<path>.*)$', 'django.views.static.serve',
-            { 'document_root': './js/' }
-    ),
- 
-    url( r'^css/(?P<path>.*)$', 'django.views.static.serve',
-            { 'document_root': './css/' }
-    ),
- 
-    url( r'^images/(?P<path>.*)$', 'django.views.static.serve',
-            { 'document_root': './images/' }
-    ),
     
-    url(r'^$', archive),
+    url(r'^$', index),
 )
