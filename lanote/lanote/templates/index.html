@@ -8,7 +8,9 @@
         <div class="ann_h2">这是公告区,而这里是公告的内容</div>
       </div>
       <div class="row panel">
-        <div class="row">
+      
+
+         <!-- 文章内容开始 -->
           <div class="post">
             <h3 class="entry-title">
               <a rel="bookmark" title="指向我的文章" href="#">指向我的文章</a>
@@ -41,27 +43,30 @@
               </span>
             </div>
           </div>
-        </div>
-        <div class="ul" />
-        <div class="pagination">
+          <!-- 文章内容结束 -->
+          <div class="ul"></div>
+           <div class="pagination">
           <li><a href="#">Prev</a></li>
           <li><a href="#">1</a></li>
           <li><a href="#">2</a></li>
           <li><a href="#">3</a></li>
           <li><a href="#">4</a></li>
           <li><a href="#">Next</a></li>
-
         </div>
-      </div>
+          </div>
+        
+        
+       
+        
     </div>
     <div class="span4">
       <form class="panel form-vertical" action="#" method="post",onsubmit="return dologin('/user/login')">
         <div class="header">登录</div>
           <div class="alert alert-error" id="alert-error" style="display:none"></div>
-          <i class="icon-user" />
+          <i class="icon-user" ></i>
           <input class="input-large" type="text" placeholder="Email" name="email" id="email">
           <br/>
-          <i class="icon-lock" />
+          <i class="icon-lock" ></i>
           <input class="input-large" type="password" placeholder="Password" name="password" id="password">
           <button class="btn" type="submit">登录</button>
           <a href="#">&nbsp;注册</a>
@@ -80,12 +85,14 @@
           <div class="header">相关站点</div>
         </div>
       </div>
-    </div>
+  
+  </div>
   <hr/>
-  <footer>
+<footer>
     <p>&copy; Company 2012</p>
-  </footer>
+</footer>
 </div>
+
 {% endblock %}
           
 
