@@ -15,4 +15,8 @@ def index(request):
     t = loader.get_template("index.html")
     ctx = Context()
     return HttpResponse(t.render(ctx))
-    
+
+def diary_add(request):
+    t = loader.get_template("diary/add.html")
+    ctx = Context()
+    return HttpResponse(t.render(ctx))
