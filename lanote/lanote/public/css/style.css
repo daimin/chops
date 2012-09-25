@@ -59,7 +59,6 @@
 }
 
 .ul{
-   border-bottom: 1px dashed #DDDDDD;
    clear: both;
    line-height: 100%;
    margin-bottom:6px;
@@ -212,7 +211,6 @@ body.page .edit-link {
 }
 
 .header{
-   border-bottom:1px solid #ddd;
    height:24px;
    margin-bottom:12px;
    font-weight:bold;
@@ -220,7 +218,6 @@ body.page .edit-link {
 }
 
 .diary-title{
-   border-bottom:1px solid #ddd;
    height:24px;
    margin-bottom:12px;
    font-weight:bold;
@@ -336,11 +333,16 @@ span .number{
 .radio iframe{
 	scrolling:no;
 	border:0;
-	width:520px;
+	width:460px;
 	height:190px;
 	hspace:-100px;
 	vspace:-100px;
 	marginheight:-100px;
 	marginwidth:-100px;
 	align:center;
+}
+
+.diary-head{
+   text-align: right;
+}
 }
