@@ -18,7 +18,7 @@ TreeBaseClass = wx.TreeCtrl
 class StatTree(ExpansionState, TreeBaseClass):
     def __init__(self, parent):
         TreeBaseClass.__init__(self, parent, style=wx.TR_DEFAULT_STYLE|
-                               wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_HIDE_ROOT)
+                               wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_LINES_AT_ROOT | wx.TR_HIDE_ROOT)
         self.BuildTreeImageList()
 
 

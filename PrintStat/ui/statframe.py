@@ -40,10 +40,10 @@ class StatFrame(wx.Frame):
 
         self.loaded = False
         self.cwd = os.getcwd()
-        self.curView = ""
         self.shell = None
         self.firstTime = True
-        self.finddlg = None
+        self.finddlg = None 
+        self.statPage = None
 
         icon = em_images.WXPdemo.GetIcon()
         self.SetIcon(icon)
@@ -102,20 +102,8 @@ class StatFrame(wx.Frame):
         # the notebook...
         
         panel = wx.Panel(self.nb, -1, style=wx.CLIP_CHILDREN)
-        #self.ovr = wx.html.HtmlWindow(panel, -1, size=(400, 400))
-        self.nb.AddPage(panel, self.overviewText, imageId=0)
-        self.LoadMudule(0)
-
-        def OnOvrSize(evt, ovr=self.ovr):
-            ovr.SetSize(evt.GetSize())
-        panel.Bind(wx.EVT_SIZE, OnOvrSize)
+        
         panel.Bind(wx.EVT_ERASE_BACKGROUND, EmptyHandler)
-
-        if "gtk2" in wx.PlatformInfo:
-            self.ovr.SetStandardFonts()
-        self.SetView(self.overviewText, conf.mainOverview)
-
-
 
         # Set the wxWindows log target to be this textctrl
         # 日志文件处理
@@ -135,6 +123,8 @@ class StatFrame(wx.Frame):
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
         leftPanel.SetSizer(leftBox)
 
+        # 加载默认显示页面
+        self.LoadMudule(0)
         # select initial items
         self.nb.SetSelection(0)
         self.tree.SelectItem(self.root)
@@ -167,6 +157,7 @@ class StatFrame(wx.Frame):
 
         self.mgr.SetFlags(self.mgr.GetFlags() ^ wx.aui.AUI_MGR_TRANSPARENT_DRAG)
         
+
 
 
     def ReadConfigurationFile(self):
@@ -279,7 +270,7 @@ class StatFrame(wx.Frame):
                     
         self.tree.Freeze()
         self.tree.DeleteAllItems()
-        self.root = self.tree.AddRoot("")
+        self.root = self.tree.AddRoot("管理")
         self.tree.SetItemImage(self.root, 10)
         self.tree.SetItemPyData(self.root, 1)
 
@@ -294,9 +285,7 @@ class StatFrame(wx.Frame):
             treeFont.SetPointSize(treeFont.GetPointSize()+2)
             treeFont.SetWeight(wx.BOLD)
             catFont.SetWeight(wx.BOLD)
-            
-        self.tree.SetItemFont(self.root, treeFont)
-        
+                    
         firstChild = None
         selectItem = None
         
@@ -378,35 +367,10 @@ class StatFrame(wx.Frame):
             self.pnl.Freeze()
             
             os.chdir(self.cwd)
-            if mId == 0:        # 列表
-                self.statModules = modules.Modules("%s/%s"%("ui", "GridSimple"))
-                pass
-            elif mId == 1:
-                self.statModules = modules.Modules("%s/%s"%("ui", "GridSimple"))
-                pass
-            elif mId == 2:
-                pass
-            elif mId == 3:
-                pass
-            elif mId == 4:
-                pass
-            elif mId == 5:
-                pass
-            elif mId == 6:
-                pass
-            elif mId == 7:
-                pass
-            elif mId == 8:
-                pass
-            elif mId == 9:
-                pass
-            elif mId == 10:
-                pass
-            else:
-                pass
+            
+            self.statModules = modules.Modules("%s/%s"%("ui", conf._modules[mId][0]), conf._modules[mId][1])
             
             self.ActiveModuleChanged()
-            self.UpdateNotebook(0)
 
         finally:
             wx.EndBusyCursor()
@@ -425,7 +389,7 @@ class StatFrame(wx.Frame):
         
         #---------------------------------------------
     def ShutdownStatModule(self):
-        if self.statPage:
+        if self.statPage <> None:
             # inform the window that it's time to quit if it cares
             if hasattr(self.statPage, "ShutdownStat"):
                 self.statPage.ShutdownStat()
@@ -436,80 +400,25 @@ class StatFrame(wx.Frame):
         """Runs the active module"""
         module = self.statModules.GetActive()
        
-        #self.ShutdownStatModule()
+        self.ShutdownStatModule()
         
         # o The RunTest() for all samples must now return a window that can
         #   be placed in a tab in the main notebook.
         # o If an error occurs (or has occurred before) an error tab is created.
         if module is not None:
             wx.LogMessage("Running stat module...")
-            self.statPage = module.RunFrame(self.nb, self)
+            self.statPage = module.Load(self.nb, self)
             
 
             bg = self.nb.GetThemeBackgroundColour()
             if bg:
                 self.statPage.SetBackgroundColour(bg)
-
-            
-        print self.statModules.name
-        self.SetView(self.statModules.name, self.statPage)
-
-        if self.firstTime:
-            # change to the demo page the first time a module is run
-            self.UpdateNotebook(2)
-            self.firstTime = False
-        else:
-            # otherwise just stay on the same tab in case the user has changed to another one
-            self.UpdateNotebook()
-
-            
-    #---------------------------------------------
-    def UpdateNotebook(self, select = -1):
-        nb = self.nb
-        debug = False
-        self.pnl.Freeze()
-        
-        def UpdatePage(page, pageText):
-            pageExists = False
-            pagePos = -1
-            for i in range(nb.GetPageCount()):
-                if nb.GetPageText(i) == pageText:
-                    pageExists = True
-                    pagePos = i
-                    break
                 
-            if page:
-                if not pageExists:
-                    # Add a new page
-                    nb.AddPage(page, pageText, imageId=nb.GetPageCount())
-                    if debug: wx.LogMessage("DBG: ADDED %s" % pageText)
-                else:
-                    if nb.GetPage(pagePos) != page:
-                        # Reload an existing page
-                        nb.DeletePage(pagePos)
-                        nb.InsertPage(pagePos, page, pageText, imageId=pagePos)
-                        if debug: wx.LogMessage("DBG: RELOADED %s" % pageText)
-                    else:
-                        # Excellent! No redraw/flicker
-                        if debug: wx.LogMessage("DBG: SAVED from reloading %s" % pageText)
-            elif pageExists:
-                # Delete a page
-                nb.DeletePage(pagePos)
-                if debug: wx.LogMessage("DBG: DELETED %s" % pageText)
-            else:
-                if debug: wx.LogMessage("DBG: STILL GONE - %s" % pageText)
-                
-        if select == -1:
-            select = nb.GetSelection()
-
-        if select >= 0 and select < nb.GetPageCount():
-            nb.SetSelection(select)
-
-        self.pnl.Thaw()
+        self.SetView(self.statModules.caption, self.statPage)
         
     #---------------------------------------------
-    def SetView(self, name, mView): 
-        self.nb.AddPage(mView,name,0)
+    def SetView(self, name, mView):
+        self.nb.AddPage(mView,name ,0)
 
     #---------------------------------------------
     # Menu methods

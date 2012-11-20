@@ -19,9 +19,10 @@ class Modules:
     Dynamically manages the original/modified versions of a demo
     module
     """
-    def __init__(self, name):
+    def __init__(self, name, caption):
         self.modActive = -1
         self.name = name
+        self.caption = caption
         
         #              (dict , source ,  filename , description   , error information )        
         #              (  0  ,   1    ,     2     ,      3        ,          4        )        

@@ -6,6 +6,15 @@ Created on 2012-11-19
 
 @author: daimin
 '''
+
+# 模块类别
+_modules = {
+  0 : ("GridSimple","简单表格"),
+  1 : ("GridSimple","简单表格"),
+  2 : ("",""),
+          
+}
+
 '''
 目录树
 '''
@@ -19,7 +28,7 @@ _statPngs = ["overview", "recent", "frame", "dialog", "moredialog", "core",
 _treeList = [
     # new stuff
     ('报表管理', [
-        ('报表列表',9,1),  # 节点名称,图标序列号,ID
+        ('报表列表',9,1),  # 节点名称,图标序列号,模块ID
         ]),
 
     ('设备管理', [
@@ -46,6 +55,7 @@ _treeList = [
         ('退出',14,10),
         ]),   
 ]
+
 
 
 

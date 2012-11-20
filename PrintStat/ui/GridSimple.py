@@ -242,10 +242,8 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
 
 #---------------------------------------------------------------------------
 
-class RunFrame(wx.Frame):
-    def __init__(self, parent, log):
-        wx.Frame.__init__(self, parent, -1, "Simple Grid Demo", size=(640,480))
-        self.grid = SimpleGrid(self, log)
+def Load(parent,log):
+    return SimpleGrid(parent, log)
 
 
 
@@ -255,7 +253,7 @@ if __name__ == '__main__':
     import sys
     from wx.lib.mixins.inspection import InspectableApp
     app = InspectableApp(False)
-    frame = RunFrame(None, sys.stdout)
+    frame = Load(None, sys.stdout)
     frame.Show(True)
     #import wx.lib.inspection
     #wx.lib.inspection.InspectionTool().Show()

@@ -200,4 +200,5 @@ def write_log(file_object, logline, ltype = 1):
         prefix = 'error'
     else:
         prefix = 'info'
-    file_object.write("[%s]: %s\n" % (prefix, logline))
+    if file_object:
+        file_object.write("[%s]: %s\n" % (prefix, logline))
