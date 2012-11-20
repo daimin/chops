@@ -153,7 +153,7 @@ def HuntExternalDemos():
         # Get the recent additions for this package
         conf._treeList[0][1].extend(package.GetRecentAdditions())
         # Extend the demo bitmaps and the catalog
-        conf._demoPngs.insert(index+1, extern)
+        conf._statPngs.insert(index+1, extern)
         images.catalog[extern] = package.GetDemoBitmap()
 
     # That's all folks...
@@ -183,3 +183,21 @@ def LookForExternals(externalDemos, demoName):
 
     # No match found, return None for both
     return pkg, overview
+
+def write_log(file_object, logline, ltype = 1):
+    """ 记录日志
+    """
+    if file_object == None:
+        return 
+    prefix = 'info'
+    if ltype == 1:
+        prefix = 'info'
+    elif ltype == 2:
+        prefix = 'debug'
+    elif ltype == 3:
+        prefix = 'warning'
+    elif ltype == 4: 
+        prefix = 'error'
+    else:
+        prefix = 'info'
+    file_object.write("[%s]: %s\n" % (prefix, logline))

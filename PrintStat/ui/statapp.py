@@ -13,15 +13,17 @@ import statframe
 from functions import *
 
 class StatSplashScreen(wx.SplashScreen):
+    """启动页面
+    """
     def __init__(self):
         bmp = wx.Image(opj("images/splash.png")).ConvertToBitmap()
         wx.SplashScreen.__init__(self, bmp,
                                  wx.SPLASH_CENTRE_ON_SCREEN | wx.SPLASH_TIMEOUT,
-                                 5000, None, -1)
+                                 1000, None, -1)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
-        self.fc = wx.FutureCall(2000, self.ShowMain)
+        self.fc = wx.FutureCall(400, self.ShowMain)
 
-
+    
     def OnClose(self, evt):
         # Make sure the default handler runs too so this window gets
         # destroyed
@@ -31,16 +33,13 @@ class StatSplashScreen(wx.SplashScreen):
         # if the timer is still running then go ahead and show the
         # main frame now
         if self.fc.IsRunning():
-            self.fc.Stop()
-            #self.ShowMain()
-
+            self.fc.Stop()    
 
     def ShowMain(self):
-        frame = statframe.StatFrame(None, "wxPython: (A Demonstration)")
+        frame = statframe.StatFrame(None, conf.APP_NAME)
         frame.Show()
         if self.fc.IsRunning():
             self.Raise()
-        wx.CallAfter(frame.ShowTip)
         
 
 class StatApp(wx.App):
@@ -64,7 +63,7 @@ class StatApp(wx.App):
         # Create and show the splash screen.  It will then create and show
         # the main frame when it is time to do so.
         wx.SystemOptions.SetOptionInt("mac.window-plain-transition", 1)
-        self.SetAppName("wxPyDemo")
+        self.SetAppName(conf.APP_NAME)
         
         # For debugging
         #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG)

@@ -33,6 +33,9 @@ class Modules:
                 os.path.join(os.getcwdu(), GetOriginalFilename(name))
             
         # load original module
+        if name.find(".") <> -1:
+            name = name.replace(".", '/')
+        
         self.LoadFromFile(conf.modOriginal, GetOriginalFilename(name))
         self.SetActive(conf.modOriginal)
 
@@ -43,6 +46,7 @@ class Modules:
 
     def LoadFromFile(self, modID, filename):
         self.modules[modID][2] = filename
+        
         file = open(filename, "rt")
         self.LoadFromSource(modID, file.read())
         file.close()
@@ -133,7 +137,7 @@ class Modules:
         self.modules[modID][0] = None
         self.modules[modID][1] = ""
         self.modules[modID][2] = ""
-        
+            
 #---------------------------------------------------------------------------
 
 class ModuleDictWrapper:

@@ -10,15 +10,16 @@ import sys, os, time, traceback, types
 
 import wx
 import wx.aui
+import wx.html
 
-import images
+import images as em_images
 import stat_taskbaricon
 import stat_tree
 import modules
-import code_panel
-import error_panel
 
 from functions import *
+
+
 
 class StatFrame(wx.Frame):
     overviewText = "wxPython Overview"
@@ -39,15 +40,13 @@ class StatFrame(wx.Frame):
 
         self.loaded = False
         self.cwd = os.getcwd()
-        self.curOverview = ""
-        self.demoPage = None
-        self.codePage = None
+        self.curView = ""
         self.shell = None
         self.firstTime = True
         self.finddlg = None
 
-        #icon = images.WXPdemo.GetIcon()
-        #self.SetIcon(icon)
+        icon = em_images.WXPdemo.GetIcon()
+        self.SetIcon(icon)
 
         try:
             self.tbicon = stat_taskbaricon.StatTaskBarIcon(self)
@@ -63,7 +62,7 @@ class StatFrame(wx.Frame):
         self.Centre(wx.BOTH)
         self.CreateStatusBar(1, wx.ST_SIZEGRIP)
 
-        self.dying = False
+        self.dying = False 
         self.skipLoad = False
         
         def EmptyHandler(evt): pass
@@ -76,34 +75,19 @@ class StatFrame(wx.Frame):
         imgList = wx.ImageList(16, 16)
         
         for png in ["overview", "code", "demo"]:
-            bmp = images.catalog[png].GetBitmap()
+            bmp = em_images.catalog[png].GetBitmap()
             imgList.Add(bmp)
         self.nb.AssignImageList(imgList)
 
         self.BuildMenuBar()
         
-        self.finddata = wx.FindReplaceData()
-        self.finddata.SetFlags(wx.FR_DOWN)
 
         # Create a TreeCtrl
         leftPanel = wx.Panel(pnl, style=wx.TAB_TRAVERSAL|wx.CLIP_CHILDREN)
         self.treeMap = {}
-        self.searchItems = {}
         
         self.tree = stat_tree.StatTree(leftPanel)
         
-        self.filter = wx.SearchCtrl(leftPanel, style=wx.TE_PROCESS_ENTER)
-        self.filter.ShowCancelButton(True)
-        self.filter.Bind(wx.EVT_TEXT, self.RecreateTree)
-        self.filter.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnSearchCancelBtn)
-        self.filter.Bind(wx.EVT_TEXT_ENTER, self.OnSearch)
-
-        searchMenu = wx.Menu()
-        item = searchMenu.AppendRadioItem(-1, "Sample Name")
-        self.Bind(wx.EVT_MENU, self.OnSearchMenu, item)
-        item = searchMenu.AppendRadioItem(-1, "Sample Content")
-        self.Bind(wx.EVT_MENU, self.OnSearchMenu, item)
-        self.filter.SetMenu(searchMenu)
 
         self.RecreateTree()
         self.tree.SetExpansionState(self.expansionState)
@@ -117,49 +101,36 @@ class StatFrame(wx.Frame):
         # refresh bug of some sort (wxGTK) when it is directly in
         # the notebook...
         
-        if 0:  # the old way
-            self.ovr = wx.html.HtmlWindow(self.nb, -1, size=(400, 400))
-            self.nb.AddPage(self.ovr, self.overviewText, imageId=0)
+        panel = wx.Panel(self.nb, -1, style=wx.CLIP_CHILDREN)
+        #self.ovr = wx.html.HtmlWindow(panel, -1, size=(400, 400))
+        self.nb.AddPage(panel, self.overviewText, imageId=0)
+        self.LoadMudule(0)
 
-        else:  # hopefully I can remove this hacky code soon, see SF bug #216861
-            panel = wx.Panel(self.nb, -1, style=wx.CLIP_CHILDREN)
-            self.ovr = wx.html.HtmlWindow(panel, -1, size=(400, 400))
-            self.nb.AddPage(panel, self.overviewText, imageId=0)
-
-            def OnOvrSize(evt, ovr=self.ovr):
-                ovr.SetSize(evt.GetSize())
-            panel.Bind(wx.EVT_SIZE, OnOvrSize)
-            panel.Bind(wx.EVT_ERASE_BACKGROUND, EmptyHandler)
+        def OnOvrSize(evt, ovr=self.ovr):
+            ovr.SetSize(evt.GetSize())
+        panel.Bind(wx.EVT_SIZE, OnOvrSize)
+        panel.Bind(wx.EVT_ERASE_BACKGROUND, EmptyHandler)
 
         if "gtk2" in wx.PlatformInfo:
             self.ovr.SetStandardFonts()
-        self.SetOverview(self.overviewText, conf.mainoverview.mainOverview)
+        self.SetView(self.overviewText, conf.mainOverview)
 
 
-        # Set up a log window
-        self.log = wx.TextCtrl(pnl, -1,
-                              style = wx.TE_MULTILINE|wx.TE_READONLY|wx.HSCROLL)
-        if wx.Platform == "__WXMAC__":
-            self.log.MacCheckSpelling(False)
 
         # Set the wxWindows log target to be this textctrl
-        #wx.Log_SetActiveTarget(wx.LogTextCtrl(self.log))
-
-        # But instead of the above we want to show how to use our own wx.Log class
-        wx.Log_SetActiveTarget(StatLog(self.log))
-        
-        # for serious debugging
-        #wx.Log_SetActiveTarget(wx.LogStderr())
-        #wx.Log_SetTraceMask(wx.TraceMessages)
-
-        self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
-        wx.GetApp().Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
+        # 日志文件处理
+        wx.Log_SetActiveTarget(StatLog())
+        if conf.ENVIRONMENT == "dev":
+            # 调试用记得以后关掉
+            #wx.Log_SetActiveTarget(wx.LogStderr())
+            #wx.Log_SetTraceMask(wx.TraceMessages)           
+            self.Bind(wx.EVT_ACTIVATE, self.OnActivate)
+            wx.GetApp().Bind(wx.EVT_ACTIVATE_APP, self.OnAppActivate)
 
         # add the windows to the splitter and split it.
         leftBox = wx.BoxSizer(wx.VERTICAL)
         leftBox.Add(self.tree, 1, wx.EXPAND)
         leftBox.Add(wx.StaticText(leftPanel, label = "Filter Demos:"), 0, wx.TOP|wx.LEFT, 5)
-        leftBox.Add(self.filter, 0, wx.EXPAND|wx.ALL, 5)
         if 'wxMac' in wx.PlatformInfo:
             leftBox.Add((5,5))  # Make sure there is room for the focus ring
         leftPanel.SetSizer(leftBox)
@@ -169,7 +140,6 @@ class StatFrame(wx.Frame):
         self.tree.SelectItem(self.root)
 
         # Load 'Main' module
-        self.LoadDemo(self.overviewText)
         self.loaded = True
 
         # select some other initial module?
@@ -189,17 +159,8 @@ class StatFrame(wx.Frame):
                          Left().Layer(2).BestSize((240, -1)).
                          MinSize((160, -1)).
                          Floatable(conf.ALLOW_AUI_FLOATING).FloatingSize((240, 700)).
-                         Caption("wxPython Demos").
                          CloseButton(False).
-                         Name("DemoTree"))
-        self.mgr.AddPane(self.log,
-                         wx.aui.AuiPaneInfo().
-                         Bottom().BestSize((-1, 150)).
-                         MinSize((-1, 60)).
-                         Floatable(conf.ALLOW_AUI_FLOATING).FloatingSize((500, 160)).
-                         Caption("Demo Log Messages").
-                         CloseButton(False).
-                         Name("LogWindow"))
+                         Name("StatTree"))
 
         self.auiConfigurations[conf.DEFAULT_PERSPECTIVE] = self.mgr.SavePerspective()
         self.mgr.Update()
@@ -228,17 +189,13 @@ class StatFrame(wx.Frame):
         # Make a File menu
         self.mainmenu = wx.MenuBar()
         menu = wx.Menu()
-        item = menu.Append(-1, '&Redirect Output',
-                           'Redirect print statements to a window',
-                           wx.ITEM_CHECK)
-        self.Bind(wx.EVT_MENU, self.OnToggleRedirect, item)
  
         exitItem = wx.MenuItem(menu, -1, 'E&xit\tCtrl-Q', 'Get the heck outta here!')
-        exitItem.SetBitmap(images.catalog['exit'].GetBitmap())
+        exitItem.SetBitmap(em_images.catalog['exit'].GetBitmap())
         menu.AppendItem(exitItem)
         self.Bind(wx.EVT_MENU, self.OnFileExit, exitItem)
         wx.App.SetMacExitMenuItemId(exitItem.GetId())
-        self.mainmenu.Append(menu, '&File')
+        self.mainmenu.Append(menu, '&文件')
 
         # Make a Demo menu
         menu = wx.Menu()
@@ -246,12 +203,12 @@ class StatFrame(wx.Frame):
             menuItem = wx.MenuItem(menu, -1, item[0])
             submenu = wx.Menu()
             for childItem in item[1]:
-                mi = submenu.Append(-1, childItem)
+                mi = submenu.Append(-1, childItem[0])
                 self.Bind(wx.EVT_MENU, self.OnDemoMenu, mi)
-            menuItem.SetBitmap(images.catalog[conf._demoPngs[indx+1]].GetBitmap())
+            menuItem.SetBitmap(em_images.catalog[conf._statPngs[childItem[1]]].GetBitmap())
             menuItem.SetSubMenu(submenu)
             menu.AppendItem(menuItem)
-        self.mainmenu.Append(menu, '&Demo')
+        self.mainmenu.Append(menu, '&' + conf.tree_menu_name)
 
         # Make an Option menu
         # If we've turned off floatable panels then this menu is not needed
@@ -274,19 +231,19 @@ class StatFrame(wx.Frame):
             self.perspectives_menu = perspectivesMenu
 
             item = wx.MenuItem(menu, -1, 'Save Perspective', 'Save AUI perspective')
-            item.SetBitmap(images.catalog['saveperspective'].GetBitmap())
+            item.SetBitmap(em_images.catalog['saveperspective'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnSavePerspective, item)
 
             item = wx.MenuItem(menu, -1, 'Delete Perspective', 'Delete AUI perspective')
-            item.SetBitmap(images.catalog['deleteperspective'].GetBitmap())
+            item.SetBitmap(em_images.catalog['deleteperspective'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnDeletePerspective, item)
 
             menu.AppendSeparator()
 
             item = wx.MenuItem(menu, -1, 'Restore Tree Expansion', 'Restore the initial tree expansion state')
-            item.SetBitmap(images.catalog['expansion'].GetBitmap())
+            item.SetBitmap(em_images.catalog['expansion'].GetBitmap())
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.OnTreeExpansion, item)
 
@@ -294,66 +251,21 @@ class StatFrame(wx.Frame):
         
         # Make a Help menu
         menu = wx.Menu()
-        findItem = wx.MenuItem(menu, -1, '&Find\tCtrl-F', 'Find in the Demo Code')
-        findItem.SetBitmap(images.catalog['find'].GetBitmap())
-        if 'wxMac' not in wx.PlatformInfo:
-            findNextItem = wx.MenuItem(menu, -1, 'Find &Next\tF3', 'Find Next')
-        else:
-            findNextItem = wx.MenuItem(menu, -1, 'Find &Next\tCtrl-G', 'Find Next')
-        findNextItem.SetBitmap(images.catalog['findnext'].GetBitmap())
-        menu.AppendItem(findItem)
-        menu.AppendItem(findNextItem)
-        menu.AppendSeparator()
 
-        shellItem = wx.MenuItem(menu, -1, 'Open Py&Shell Window\tF5',
-                                'An interactive interpreter window with the demo app and frame objects in the namesapce')
-        shellItem.SetBitmap(images.catalog['pyshell'].GetBitmap())
-        menu.AppendItem(shellItem)
-        inspToolItem = wx.MenuItem(menu, -1, 'Open &Widget Inspector\tF6',
-                                   'A tool that lets you browse the live widgets and sizers in an application')
-        inspToolItem.SetBitmap(images.catalog['inspect'].GetBitmap())
-        menu.AppendItem(inspToolItem)
-        if 'wxMac' not in wx.PlatformInfo:
-            menu.AppendSeparator()
-        helpItem = menu.Append(-1, '&About wxPython Demo', 'wxPython RULES!!!')
+        helpItem = menu.Append(-1, '&关于BPD百星', 'wxPython RULES!!!')
         wx.App.SetMacAboutMenuItemId(helpItem.GetId())
-
-        self.Bind(wx.EVT_MENU, self.OnOpenShellWindow, shellItem)
-        self.Bind(wx.EVT_MENU, self.OnOpenWidgetInspector, inspToolItem)
+        
         self.Bind(wx.EVT_MENU, self.OnHelpAbout, helpItem)
-        self.Bind(wx.EVT_MENU, self.OnHelpFind,  findItem)
-        self.Bind(wx.EVT_MENU, self.OnFindNext,  findNextItem)
-        self.Bind(wx.EVT_FIND, self.OnFind)
-        self.Bind(wx.EVT_FIND_NEXT, self.OnFind)
-        self.Bind(wx.EVT_FIND_CLOSE, self.OnFindClose)
-        self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateFindItems, findItem)
-        self.Bind(wx.EVT_UPDATE_UI, self.OnUpdateFindItems, findNextItem)
-        self.mainmenu.Append(menu, '&Help')
+        
+        self.mainmenu.Append(menu, '&帮助')
         self.SetMenuBar(self.mainmenu)
 
-        if False:
-            # This is another way to set Accelerators, in addition to
-            # using the '\t<key>' syntax in the menu items.
-            aTable = wx.AcceleratorTable([(wx.ACCEL_ALT,  ord('X'), exitItem.GetId()),
-                                          (wx.ACCEL_CTRL, ord('H'), helpItem.GetId()),
-                                          (wx.ACCEL_CTRL, ord('F'), findItem.GetId()),
-                                          (wx.ACCEL_NORMAL, wx.WXK_F3, findNextItem.GetId()),
-                                          (wx.ACCEL_NORMAL, wx.WXK_F9, shellItem.GetId()),
-                                          ])
-            self.SetAcceleratorTable(aTable)
             
 
     #---------------------------------------------    
     def RecreateTree(self, evt=None):
         # Catch the search type (name or content)
-        searchMenu = self.filter.GetMenu().GetMenuItems()
-        fullSearch = searchMenu[1].IsChecked()
             
-        if evt:
-            if fullSearch:
-                # Do not`scan all the demo files for every char
-                # the user input, use wx.EVT_TEXT_ENTER instead
-                return
 
         expansionState = self.tree.GetExpansionState()
 
@@ -367,9 +279,9 @@ class StatFrame(wx.Frame):
                     
         self.tree.Freeze()
         self.tree.DeleteAllItems()
-        self.root = self.tree.AddRoot("wxPython Overview")
-        self.tree.SetItemImage(self.root, 0)
-        self.tree.SetItemPyData(self.root, 0)
+        self.root = self.tree.AddRoot("")
+        self.tree.SetItemImage(self.root, 10)
+        self.tree.SetItemPyData(self.root, 1)
 
         treeFont = self.tree.GetFont()
         catFont = self.tree.GetFont()
@@ -387,33 +299,24 @@ class StatFrame(wx.Frame):
         
         firstChild = None
         selectItem = None
-        filter = self.filter.GetValue()
-        count = 0
         
         for category, items in conf._treeList:
-            count += 1
-            if filter:
-                if fullSearch:
-                    items = self.searchItems[category]
-                else:
-                    items = [item for item in items if filter.lower() in item.lower()]
             if items:
-                child = self.tree.AppendItem(self.root, category, image=count)
+                child = self.tree.AppendItem(self.root, category, image=15)
                 self.tree.SetItemFont(child, catFont)
-                self.tree.SetItemPyData(child, count)
+                self.tree.SetItemPyData(child, 0)
                 if not firstChild: firstChild = child
                 for childItem in items:
-                    image = count
-                    if DoesModifiedExist(childItem):
-                        image = len(conf._demoPngs)
-                    theDemo = self.tree.AppendItem(child, childItem, image=image)
-                    self.tree.SetItemPyData(theDemo, count)
-                    self.treeMap[childItem] = theDemo
+                    image = childItem[1]
+                    if DoesModifiedExist(childItem[0]):
+                        image = childItem[1]
+                    theItem = self.tree.AppendItem(child, childItem[0], image=image)
+                    self.tree.SetItemPyData(theItem, childItem[2])
+                    self.treeMap[childItem] = theItem
                     if current and (childItem, category) == current:
-                        selectItem = theDemo
+                        selectItem = theItem
                         
                     
-        self.tree.Expand(self.root)
         if firstChild:
             self.tree.Expand(firstChild)
         if filter:
@@ -428,51 +331,6 @@ class StatFrame(wx.Frame):
         self.tree.Thaw()
         self.searchItems = {}
 
-
-    def OnSearchMenu(self, event):
-
-        # Catch the search type (name or content)
-        searchMenu = self.filter.GetMenu().GetMenuItems()
-        fullSearch = searchMenu[1].IsChecked()
-        
-        if fullSearch:
-            self.OnSearch()
-        else:
-            self.RecreateTree()
-            
-
-    def OnSearch(self, event=None):
-
-        value = self.filter.GetValue()
-        if not value:
-            self.RecreateTree()
-            return
-
-        wx.BeginBusyCursor()
-        
-        for category, items in conf._treeList:
-            self.searchItems[category] = []
-            for childItem in items:
-                if SearchDemo(childItem, value):
-                    self.searchItems[category].append(childItem)
-
-        wx.EndBusyCursor()
-        self.RecreateTree()            
-
-
-    def OnSearchCancelBtn(self, event):
-        self.filter.SetValue('')
-        self.OnSearch()
-        
-
-    def SetTreeModified(self, modified):
-        item = self.tree.GetSelection()
-        if modified:
-            image = len(conf._demoPngs)
-        else:
-            image = self.tree.GetItemPyData(item)
-        self.tree.SetItemImage(item, image)
-        
         
     def WriteText(self, text):
         if text[-1:] == '\n':
@@ -500,7 +358,7 @@ class StatFrame(wx.Frame):
         pt = event.GetPosition();
         item, flags = self.tree.HitTest(pt)
         if item == self.tree.GetSelection():
-            self.SetOverview(self.tree.GetItemText(item)+" Overview", self.curOverview)
+            self.SetView(self.tree.GetItemText(item)+" Overview", self.curView)
         event.Skip()
 
     #---------------------------------------------
@@ -509,94 +367,92 @@ class StatFrame(wx.Frame):
             return
 
         item = event.GetItem()
-        itemText = self.tree.GetItemText(item)
-        self.LoadDemo(itemText)
+        
+        mid = self.tree.GetItemIdentity(item)
+        self.LoadMudule(mid)
 
     #---------------------------------------------
-    def LoadDemo(self, demoName):
+    def LoadMudule(self, mId):
         try:
             wx.BeginBusyCursor()
             self.pnl.Freeze()
             
             os.chdir(self.cwd)
-            self.ShutdownDemoModule()
-
-            if demoName == self.overviewText:
-                # User selected the "wxPython Overview" node
-                # ie: _this_ module
-                # Changing the main window at runtime not yet supported...
-                self.demoModules = modules.Modules(__name__)
-                self.SetOverview(self.overviewText, conf.mainoverview.mainOverview)
-                self.LoadDemoSource()
-                self.UpdateNotebook(0)
+            if mId == 0:        # 列表
+                self.statModules = modules.Modules("%s/%s"%("ui", "GridSimple"))
+                pass
+            elif mId == 1:
+                self.statModules = modules.Modules("%s/%s"%("ui", "GridSimple"))
+                pass
+            elif mId == 2:
+                pass
+            elif mId == 3:
+                pass
+            elif mId == 4:
+                pass
+            elif mId == 5:
+                pass
+            elif mId == 6:
+                pass
+            elif mId == 7:
+                pass
+            elif mId == 8:
+                pass
+            elif mId == 9:
+                pass
+            elif mId == 10:
+                pass
             else:
-                if os.path.exists(GetOriginalFilename(demoName)):
-                    wx.LogMessage("Loading demo %s.py..." % demoName)
-                    self.demoModules = modules.Modules(demoName)
-                    self.LoadDemoSource()
-
-                else:
-
-                    package, overview = LookForExternals(self.externalDemos, demoName)
-
-                    if package:
-                        wx.LogMessage("Loading demo %s.py..." % ("%s/%s"%(package, demoName)))
-                        self.demoModules = modules.Modules("%s/%s"%(package, demoName))
-                        self.LoadDemoSource()
-                    elif overview:
-                        self.SetOverview(demoName, overview)
-                        self.codePage = None
-                        self.UpdateNotebook(0)
-                    else:
-                        self.SetOverview("wxPython", conf.mainoverview.mainOverview)
-                        self.codePage = None
-                        self.UpdateNotebook(0)
+                pass
+            
+            self.ActiveModuleChanged()
+            self.UpdateNotebook(0)
 
         finally:
             wx.EndBusyCursor()
             self.pnl.Thaw()
-
-    #---------------------------------------------
-    def LoadDemoSource(self):
-        self.codePage = None
-        self.codePage = code_panel.CodePanel(self.nb, self)  
-        self.codePage.LoadDemo(self.demoModules)
         
+        
+
+    def ReloadStat(self):
+        if self.statModules.name != __name__:
+            self.RunModule()
+    
+    def ActiveModuleChanged(self):
+        self.pnl.Freeze()        
+        self.ReloadStat()
+        self.pnl.Thaw()
+        
+        #---------------------------------------------
+    def ShutdownStatModule(self):
+        if self.statPage:
+            # inform the window that it's time to quit if it cares
+            if hasattr(self.statPage, "ShutdownStat"):
+                self.statPage.ShutdownStat()
+            wx.YieldIfNeeded() # in case the page has pending events
+            self.statPage = None               
     #---------------------------------------------
     def RunModule(self):
         """Runs the active module"""
-
-        module = self.demoModules.GetActive()
-        self.ShutdownDemoModule()
-        overviewText = ""
+        module = self.statModules.GetActive()
+       
+        #self.ShutdownStatModule()
         
         # o The RunTest() for all samples must now return a window that can
-        #   be palced in a tab in the main notebook.
+        #   be placed in a tab in the main notebook.
         # o If an error occurs (or has occurred before) an error tab is created.
-        
         if module is not None:
-            wx.LogMessage("Running demo module...")
-            if hasattr(module, "overview"):
-                overviewText = module.overview
-
-            try:
-                self.demoPage = module.runTest(self, self.nb, self)
-            except:
-                self.demoPage = error_panel.ErrorPanel(self.nb, self.codePage,
-                                               error_panel.StatError(sys.exc_info()), self)
+            wx.LogMessage("Running stat module...")
+            self.statPage = module.RunFrame(self.nb, self)
+            
 
             bg = self.nb.GetThemeBackgroundColour()
             if bg:
-                self.demoPage.SetBackgroundColour(bg)
+                self.statPage.SetBackgroundColour(bg)
 
-            assert self.demoPage is not None, "runTest must return a window!"
             
-        else:
-            # There was a previous error in compiling or exec-ing
-            self.demoPage = error_panel.ErrorPanel(self.nb, self.codePage,
-                                           self.demoModules.GetErrorInfo(), self)
-            
-        self.SetOverview(self.demoModules.name + " Overview", overviewText)
+        print self.statModules.name
+        self.SetView(self.statModules.name, self.statPage)
 
         if self.firstTime:
             # change to the demo page the first time a module is run
@@ -606,14 +462,6 @@ class StatFrame(wx.Frame):
             # otherwise just stay on the same tab in case the user has changed to another one
             self.UpdateNotebook()
 
-    #---------------------------------------------
-    def ShutdownDemoModule(self):
-        if self.demoPage:
-            # inform the window that it's time to quit if it cares
-            if hasattr(self.demoPage, "ShutdownDemo"):
-                self.demoPage.ShutdownDemo()
-            wx.YieldIfNeeded() # in case the page has pending events
-            self.demoPage = None
             
     #---------------------------------------------
     def UpdateNotebook(self, select = -1):
@@ -654,24 +502,14 @@ class StatFrame(wx.Frame):
         if select == -1:
             select = nb.GetSelection()
 
-        UpdatePage(self.codePage, "Demo Code")
-        UpdatePage(self.demoPage, "Demo")
-
         if select >= 0 and select < nb.GetPageCount():
             nb.SetSelection(select)
 
         self.pnl.Thaw()
         
     #---------------------------------------------
-    def SetOverview(self, name, text):
-        self.curOverview = text
-        lead = text[:6]
-        if lead != '<html>' and lead != '<HTML>':
-            text = '<br>'.join(text.split('\n'))
-        if wx.USE_UNICODE:
-            text = text.decode('iso8859_1')  
-        self.ovr.SetPage(text)
-        self.nb.SetPageText(0, os.path.split(name)[1])
+    def SetView(self, name, mView): 
+        self.nb.AddPage(mView,name,0)
 
     #---------------------------------------------
     # Menu methods
@@ -752,19 +590,11 @@ class StatFrame(wx.Frame):
         
  
     def OnHelpAbout(self, event):
-        from About import MyAboutBox
-        about = MyAboutBox(self)
+        from about import AboutBox
+        about = AboutBox(self) 
         about.ShowModal()
         about.Destroy()
 
-    def OnHelpFind(self, event):
-        if self.finddlg != None:
-            return
-        
-        self.nb.SetSelection(1)
-        self.finddlg = wx.FindReplaceDialog(self, self.finddata, "Find",
-                        wx.FR_NOMATCHCASE | wx.FR_NOWHOLEWORD)
-        self.finddlg.Show(True)
 
 
     def OnUpdateFindItems(self, evt):
@@ -810,44 +640,6 @@ class StatFrame(wx.Frame):
 
 
 
-    def OnFindNext(self, event):
-        if self.finddata.GetFindString():
-            self.OnFind(event)
-        else:
-            self.OnHelpFind(event)
-
-    def OnFindClose(self, event):
-        event.GetDialog().Destroy()
-        self.finddlg = None
-
-
-    def OnOpenShellWindow(self, evt):
-        if self.shell:
-            # if it already exists then just make sure it's visible
-            s = self.shell
-            if s.IsIconized():
-                s.Iconize(False)
-            s.Raise()
-        else:
-            # Make a PyShell window
-            from wx import py
-            namespace = { 'wx'    : wx,
-                          'app'   : wx.GetApp(),
-                          'frame' : self,
-                          }
-            self.shell = py.shell.ShellFrame(None, locals=namespace)
-            self.shell.SetSize((640,480))
-            self.shell.Show()
-
-            # Hook the close event of the main frame window so that we
-            # close the shell at the same time if it still exists            
-            def CloseShell(evt):
-                if self.shell:
-                    self.shell.Close()
-                evt.Skip()
-            self.Bind(wx.EVT_CLOSE, CloseShell)
-
-
     def OnOpenWidgetInspector(self, evt):
         # Activate the widget inspection tool
         from wx.lib.inspection import InspectionTool
@@ -876,6 +668,8 @@ class StatFrame(wx.Frame):
         config.Write('AUIPerspectives', str(self.auiConfigurations))
         config.Flush()
 
+        StatLog.close_log_file()
+        
         self.Destroy()
 
 
@@ -883,26 +677,9 @@ class StatFrame(wx.Frame):
     def OnIdle(self, event):
         if self.otherWin:
             self.otherWin.Raise()
-            self.demoPage = self.otherWin
+            self.statPage = self.otherWin
             self.otherWin = None
 
-
-    #---------------------------------------------
-    def ShowTip(self):
-        config = GetConfig()
-        showTipText = config.Read("tips")
-        if showTipText:
-            showTip, index = eval(showTipText)
-        else:
-            showTip, index = (1, 0)
-            
-        if showTip:
-            tp = wx.CreateFileTipProvider(opj("data/tips.txt"), index)
-            ##tp = MyTP(0)
-            showTip = wx.ShowTip(self, tp)
-            index = tp.GetCurrentTip()
-            config.Write("tips", str( (showTip, index) ))
-            config.Flush()
 
     #---------------------------------------------
     def OnDemoMenu(self, event):
@@ -939,19 +716,32 @@ class StatFrame(wx.Frame):
 #---------------------------------------------------------------------------
 # Show how to derive a custom wxLog class
 
-class StatLog(wx.PyLog):
-    def __init__(self, textCtrl, logTime=0):
-        wx.PyLog.__init__(self)
-        self.tc = textCtrl
-        self.logTime = logTime
+import datetime
 
+class StatLog(wx.PyLog):
+    
+    file_object = None
+    
+    def __init__(self, logTime=0):
+        wx.PyLog.__init__(self)
+        self.logTime = logTime
+    @staticmethod
+    def get_log_file():
+        if StatLog.file_object == None:
+            StatLog.file_object = open(conf.log_dir + datetime.datetime.now().strftime("%Y%m%d")+".log", 'a')
+        return StatLog.file_object
+    
+    @staticmethod
+    def close_log_file():
+        if StatLog.file_object <> None:
+            StatLog.file_object.close()
+        
     def DoLogString(self, message, timeStamp):
-        #print message, timeStamp
-        #if self.logTime:
-        #    message = time.strftime("%X", time.localtime(timeStamp)) + \
-        #              ": " + message
-        if self.tc:
-            self.tc.AppendText(message + '\n')
+        
+        message = time.strftime("%X", time.localtime(timeStamp)) + \
+                      ": " + message
+                      
+        write_log(StatLog.get_log_file(), message)
 
 
 

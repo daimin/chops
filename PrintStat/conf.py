@@ -9,42 +9,48 @@ Created on 2012-11-19
 '''
 目录树
 '''
+
+tree_menu_name = "管理"
+
+_statPngs = ["overview", "recent", "frame", "dialog", "moredialog", "core",
+             "book", "customcontrol", "morecontrols", "layout", "process", "clipboard",
+             "images", "miscellaneous","exit","expansion"]
+
 _treeList = [
     # new stuff
     ('报表管理', [
-        '报表列表',
+        ('报表列表',9,1),  # 节点名称,图标序列号,ID
         ]),
 
     ('设备管理', [
-        '添加设备',
-        '设备列表',
+        ('添加设备', 4,2),
+        ('设备列表',9,3),
         ]),
              
     ('客户管理', [
-        '添加客户',
-        '客户列表',
+        ('添加客户',4,4),
+        ('客户列表',9,5),
         ]), 
                          
     ('档案类型管理', [
-        '添加档案类型',
-        '档案类型列表',
+        ('添加档案类型',4,6),
+        ('档案类型列表',9,7)
         ]),
              
     ('操作员管理', [
-        '添加操作员',
-        '操作员列表',
+        ('添加操作员',4,8),
+        ('操作员列表',9,9)
         ]),   
                        
     ('系统管理', [
-        '退出',
+        ('退出',14,10),
         ]),   
 ]
 
-_demoPngs = ["overview", "recent", "frame", "dialog", "moredialog", "core",
-             "book", "customcontrol", "morecontrols", "layout", "process", "clipboard",
-             "images", "miscellaneous"]
 
-USE_CUSTOMTREECTRL = False
+
+APP_NAME = "BPD百星打印中心日结登记系统"
+#---------------------------------------------------------------------------------
 ALLOW_AUI_FLOATING = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
 
@@ -57,6 +63,11 @@ modDefault = modOriginal
 
 #---------------------------------------------------------------------------
 
+log_dir = "log/"
+
+#---------------------------------------------------------------------------
+ENVIRONMENT = "DEV"
+#---------------------------------------------------------------------------
 
 mainOverview = """<html><body>
 <h2>wxPython</h2>
