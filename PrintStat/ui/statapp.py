@@ -67,14 +67,10 @@ class StatApp(wx.App):
         
         # For debugging
         #self.SetAssertMode(wx.PYAPP_ASSERT_DIALOG)
+      
+        #splash = StatSplashScreen()
+        #splash.Show()
 
-        # Normally when using a SplashScreen you would create it, show
-        # it and then continue on with the applicaiton's
-        # initialization, finally creating and showing the main
-        # application window(s).  In this case we have nothing else to
-        # do so we'll delay showing the main frame until later (see
-        # ShowMain above) so the users can see the SplashScreen effect.        
-        splash = StatSplashScreen()
-        splash.Show()
-
+        frame = statframe.StatFrame(None, conf.APP_NAME)
+        frame.Show()
         return True
