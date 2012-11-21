@@ -1,4 +1,6 @@
-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#encoding=utf-8
 import  wx
 import  wx.grid             as  gridlib
 #import  wx.lib.mixins.grid  as  mixins
@@ -242,8 +244,29 @@ class SimpleGrid(gridlib.Grid): ##, mixins.GridAutoEditMixin):
 
 #---------------------------------------------------------------------------
 
+class PanelSimple(wx.Panel):
+    def __init__(self, parent, log):
+        wx.Panel.__init__(self, parent, -1)
+        girdSimple = SimpleGrid(self, log)
+        
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        
+        self.saveBtn = wx.Button(self, 1, "保存")
+        self.exportBtn = wx.Button(self, 2, "导出Excel")
+        bsizer = wx.GridSizer(rows=1, cols=1, hgap=5, vgap=5)
+        bbsizer = wx.BoxSizer(wx.HORIZONTAL)
+        bbsizer.Add(self.saveBtn, 0, wx.ALL,2)
+        bbsizer.Add(self.exportBtn, 0, wx.ALL,2)
+        bsizer.Add(bbsizer,0,wx.ALIGN_RIGHT)
+        sizer.Add(bsizer,0, wx.ALL|wx.GROW, 2)
+
+        sizer.Add(girdSimple,0, wx.ALL|wx.GROW, 2)
+
+        self.SetSizer(sizer)
+        sizer.Fit(self)
+
 def Load(parent,log):
-    return SimpleGrid(parent, log)
+    return PanelSimple(parent, log)
 
 
 

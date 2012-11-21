@@ -16,6 +16,7 @@ import images as em_images
 import stat_taskbaricon
 import stat_tree
 import modules
+from statdialog import MessageBox
 
 from functions import *
 
@@ -40,9 +41,7 @@ class StatFrame(wx.Frame):
 
         self.loaded = False
         self.cwd = os.getcwd()
-        self.shell = None
         self.firstTime = True
-        self.finddlg = None 
         self.statPage = None
 
         icon = em_images.WXPdemo.GetIcon()
@@ -354,27 +353,39 @@ class StatFrame(wx.Frame):
     def OnSelChanged(self, event):
         if self.dying or not self.loaded or self.skipLoad:
             return
-
+        
         item = event.GetItem()
         
         mid = self.tree.GetItemIdentity(item)
         self.LoadMudule(mid)
+    
+    def ExitMessageBox(self):
+        """生成退出的消息对话框
+        """
+        retCode = MessageBox("确认退出系统","退出")
+        if retCode == wx.YES:
+            self.Close()
+        else:
+            pass
 
     #---------------------------------------------
     def LoadMudule(self, mId):
-        try:
-            wx.BeginBusyCursor()
-            self.pnl.Freeze()
-            
-            os.chdir(self.cwd)
-            
-            self.statModules = modules.Modules("%s/%s"%("ui", conf._modules[mId][0]), conf._modules[mId][1])
-            
-            self.ActiveModuleChanged()
-
-        finally:
-            wx.EndBusyCursor()
-            self.pnl.Thaw()
+        if mId == 100:  #退出
+            self.Close()
+        else:
+            try:
+                wx.BeginBusyCursor()
+                self.pnl.Freeze()
+                
+                os.chdir(self.cwd)
+                
+                self.statModules = modules.Modules("%s/%s"%("ui", conf._modules[mId][0]), conf._modules[mId][1])
+                
+                self.ActiveModuleChanged()
+    
+            finally:
+                wx.EndBusyCursor()
+                self.pnl.Thaw()
         
         
 
@@ -389,10 +400,11 @@ class StatFrame(wx.Frame):
         
         #---------------------------------------------
     def ShutdownStatModule(self):
-        if self.statPage <> None:
+        if self.statPage is not None:
             # inform the window that it's time to quit if it cares
             if hasattr(self.statPage, "ShutdownStat"):
                 self.statPage.ShutdownStat()
+            self.nb.RemovePage(0)
             wx.YieldIfNeeded() # in case the page has pending events
             self.statPage = None               
     #---------------------------------------------
@@ -402,19 +414,10 @@ class StatFrame(wx.Frame):
        
         self.ShutdownStatModule()
         
-        # o The RunTest() for all samples must now return a window that can
-        #   be placed in a tab in the main notebook.
-        # o If an error occurs (or has occurred before) an error tab is created.
         if module is not None:
             wx.LogMessage("Running stat module...")
             self.statPage = module.Load(self.nb, self)
-            
-
-            bg = self.nb.GetThemeBackgroundColour()
-            if bg:
-                self.statPage.SetBackgroundColour(bg)
-                
-        self.SetView(self.statModules.caption, self.statPage)
+            self.SetView(self.statModules.caption, self.statPage)
         
     #---------------------------------------------
     def SetView(self, name, mView):
@@ -423,7 +426,7 @@ class StatFrame(wx.Frame):
     #---------------------------------------------
     # Menu methods
     def OnFileExit(self, *event):
-        self.Close()
+        self.ExitMessageBox()
 
     def OnToggleRedirect(self, event):
         app = wx.GetApp()
@@ -509,46 +512,6 @@ class StatFrame(wx.Frame):
     def OnUpdateFindItems(self, evt):
         evt.Enable(self.finddlg == None)
 
-
-    def OnFind(self, event):
-        editor = self.codePage.editor
-        self.nb.SetSelection(1)
-        end = editor.GetLastPosition()
-        textstring = editor.GetRange(0, end).lower()
-        findstring = self.finddata.GetFindString().lower()
-        backward = not (self.finddata.GetFlags() & wx.FR_DOWN)
-        if backward:
-            start = editor.GetSelection()[0]
-            loc = textstring.rfind(findstring, 0, start)
-        else:
-            start = editor.GetSelection()[1]
-            loc = textstring.find(findstring, start)
-        if loc == -1 and start != 0:
-            # string not found, start at beginning
-            if backward:
-                start = end
-                loc = textstring.rfind(findstring, 0, start)
-            else:
-                start = 0
-                loc = textstring.find(findstring, start)
-        if loc == -1:
-            dlg = wx.MessageDialog(self, 'Find String Not Found',
-                          'Find String Not Found in Demo File',
-                          wx.OK | wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-        if self.finddlg:
-            if loc == -1:
-                self.finddlg.SetFocus()
-                return
-            else:
-                self.finddlg.Destroy()
-                self.finddlg = None
-        editor.ShowPosition(loc)
-        editor.SetSelection(loc, loc + len(findstring))
-
-
-
     def OnOpenWidgetInspector(self, evt):
         # Activate the widget inspection tool
         from wx.lib.inspection import InspectionTool
@@ -565,21 +528,23 @@ class StatFrame(wx.Frame):
         
     #---------------------------------------------
     def OnCloseWindow(self, event):
-        self.dying = True
-        self.demoPage = None
-        self.codePage = None
-        self.mainmenu = None
-        if self.tbicon is not None:
-            self.tbicon.Destroy()
-
-        config = GetConfig()
-        config.Write('ExpansionState', str(self.tree.GetExpansionState()))
-        config.Write('AUIPerspectives', str(self.auiConfigurations))
-        config.Flush()
-
-        StatLog.close_log_file()
-        
-        self.Destroy()
+        retCode = MessageBox("确认退出系统","退出")
+        if retCode == wx.YES:
+            self.dying = True
+            self.mainmenu = None
+            if self.tbicon is not None:
+                self.tbicon.Destroy()
+    
+            config = GetConfig()
+            config.Write('ExpansionState', str(self.tree.GetExpansionState()))
+            config.Write('AUIPerspectives', str(self.auiConfigurations))
+            config.Flush()
+    
+            StatLog.close_log_file()
+            
+            self.Destroy()
+        else:
+            pass
 
 
     #---------------------------------------------
@@ -644,6 +609,7 @@ class StatLog(wx.PyLog):
     def close_log_file():
         if StatLog.file_object <> None:
             StatLog.file_object.close()
+            StatLog.file_object = None
         
     def DoLogString(self, message, timeStamp):
         
