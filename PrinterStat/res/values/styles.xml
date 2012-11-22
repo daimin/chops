@@ -14,7 +14,7 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
-           <item name="android:windowBackground">@drawable/bg</item>
+           <item name="android:windowBackground">@drawable/bg_hui</item>
            <item name="android:backgroundDimEnabled">false</item>
     </style>
 

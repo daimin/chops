@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -159,7 +160,7 @@ public class MainActivity extends Activity {
         list.add("BEIXING-GZ0067");
         list.add("BEIXING-GZ0069");
         list.add("BEIXING-GZ00816");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,list);
         return adapter;
 	}
 	
@@ -176,7 +177,7 @@ public class MainActivity extends Activity {
         list.add("吴九");
         list.add("郑十");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,list);
         return adapter;
 	}
 	
@@ -185,7 +186,7 @@ public class MainActivity extends Activity {
         list.add("图纸");
         list.add("图表");
         list.add("文字材料"); 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,list);
         return adapter;
 	}
 
