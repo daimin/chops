@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -13,7 +15,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import cn.vaga.printerstat.R;
+import com.belstar.printerstat.util.NetUtil;
+
 
 
 
@@ -22,17 +25,23 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.text.InputType;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private EditText mNum = null;
-	private EditText mXinghao = null;
 	private Button mCommit = null;
+	private EditText memoEdit;
+	private Spinner deviceNo = null;
+	private Spinner custName = null;
+	private Spinner archivesType = null;
+	
 
 	Handler mHandler = new Handler(){
 
@@ -69,7 +78,7 @@ public class MainActivity extends Activity {
 
 			ByteArrayEntity contents = new ByteArrayEntity(this.xmldata.getBytes());
 			post.setEntity(contents);
-			String res = MainActivity.this.GetStringEntity(MakeRequest(post));
+			String res = NetUtil.GetStringEntity(NetUtil.MakeRequest(post)); 
 			if(res.equals("success")){
 				Message msg = mHandler.obtainMessage();
 				msg.what = 2;
@@ -80,96 +89,12 @@ public class MainActivity extends Activity {
 	
 	MyThread mThread = null;
 
-	/**
-	 * 得到服务器响应的返回的字符串
-	 * 
-	 * @param response
-	 * @return
-	 */
-	private String GetStringEntity(HttpResponse response) {
-		if (response == null) {
-			return null;
-		}
-		HttpEntity entity = response.getEntity();
-		if (entity != null)
-			try {
-				return StreamToString(entity.getContent());
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		return null;
-	}
 	
-	/**
-	 * 读取输入流中传入的字符串
-	 * 
-	 * @param is
-	 * @return 字符串，如果读取失败返回null
-	 */
-	private static String StreamToString(InputStream is) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		String ret = "";
-		String line;
-		try {
-			while ((line = reader.readLine()) != null) {
-				ret += line;
-			}
-			return ret;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	private static HttpResponse MakeRequest(HttpUriRequest areq) {
-		DefaultHttpClient HttpManager = new DefaultHttpClient();
-		try {
-			final HttpResponse response = HttpManager.execute(areq);
-			return response;
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-		}
-		return null;
-
-	}
-	
-	/**
-	 * 得到服务器响应的返回的输入流
-	 * 
-	 * @param response
-	 * @return
-	 */
-	private static InputStream GetInputStreamEntity(HttpResponse response) {
-		if (response == null) {
-			return null;
-		}
-		HttpEntity entity = response.getEntity();
-		if (entity != null)
-			try {
-				return entity.getContent();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		return null;
-	}
 	
 
 	
 	
-	private boolean isNull(String txt){
-		if(null == txt || txt.trim().equals("")){
-			return true;
-		}
-		return false;
-	}
+
 
 	
 	@Override
@@ -177,7 +102,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		mNum = (EditText) findViewById(R.id.num);
+/*		mNum = (EditText) findViewById(R.id.num);
 		mXinghao = (EditText) findViewById(R.id.xinghao);
 		mCommit = (Button) findViewById(R.id.commit);
 
@@ -199,7 +124,69 @@ public class MainActivity extends Activity {
 					Toast.makeText(MainActivity.this, "型号和纸张数不能为空", Toast.LENGTH_SHORT).show();
 				}
 			}
-		});
+		});*/
+		
+		memoEdit = (EditText) findViewById(R.id.memo);
+		deviceNo = (Spinner) findViewById(R.id.deviceNo);
+		deviceNo.setAdapter(getDeviceNos());
+		
+		custName = (Spinner) findViewById(R.id.custName);
+		custName.setAdapter(getCustNames());
+		
+		archivesType = (Spinner) findViewById(R.id.archivesType);
+		archivesType.setAdapter(getArchivesTypes());
+	}
+	
+	private ArrayAdapter<String> getDeviceNos(){
+		List<String> list = new ArrayList<String>();
+        list.add("BEIXING-GZ001");
+        list.add("BEIXING-GZ002");
+        list.add("BEIXING-GZ003"); 
+        list.add("BEIXING-GZ006");
+        list.add("BEIXING-GZ007");
+        list.add("BEIXING-GZ009");
+        list.add("BEIXING-GZ0016");
+        list.add("BEIXING-GZ0017");
+        list.add("BEIXING-GZ0019");
+        list.add("BEIXING-GZ00216");
+        list.add("BEIXING-GZ0027");
+        list.add("BEIXING-GZ0029");
+        list.add("BEIXING-GZ00316");
+        list.add("BEIXING-GZ00416");
+        list.add("BEIXING-GZ0037");
+        list.add("BEIXING-GZ0039");
+        list.add("BEIXING-GZ00616");
+        list.add("BEIXING-GZ0067");
+        list.add("BEIXING-GZ0069");
+        list.add("BEIXING-GZ00816");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        return adapter;
+	}
+	
+	private ArrayAdapter<String> getCustNames(){
+		List<String> list = new ArrayList<String>();
+		list.add("刘一");
+		list.add("陈二");
+        list.add("张三");
+        list.add("李四");
+        list.add("王五"); 
+        list.add("赵六");
+        list.add("孙七");
+        list.add("周八");
+        list.add("吴九");
+        list.add("郑十");
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        return adapter;
+	}
+	
+	private ArrayAdapter<String> getArchivesTypes(){
+		List<String> list = new ArrayList<String>();
+        list.add("图纸");
+        list.add("图表");
+        list.add("文字材料"); 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.select_dialog_singlechoice,list);
+        return adapter;
 	}
 
 
