@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//dbs/db.py=utf-8
+encoding//dbs/db_init.py=utf-8
 encoding//ui/GridSimple.py=utf-8
 encoding//ui/error_panel.py=utf-8
 encoding//ui/modules.py=utf-8

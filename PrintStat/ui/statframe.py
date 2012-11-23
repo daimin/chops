@@ -13,7 +13,7 @@ import wx.aui
 import wx.html
 
 import images as em_images
-import stat_taskbaricon
+import stat_taskbaricon 
 import stat_tree
 import modules
 from statdialog import MessageBox
@@ -26,10 +26,10 @@ class StatFrame(wx.Frame):
     overviewText = "wxPython Overview"
 
     def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, -1, title, size = (970, 720),
+        wx.Frame.__init__(self, parent, -1, title, size = (conf.FRAME_WIDTH, conf.FRAME_HEIGHT),
                           style=wx.DEFAULT_FRAME_STYLE | wx.NO_FULL_REPAINT_ON_RESIZE)
 
-        self.SetMinSize((640,480))
+        self.SetMinSize((conf.FRAME_WIDTH,conf.FRAME_HEIGHT))
 
         # Use a panel under the AUI panes in order to work around a
         # bug on PPC Macs
@@ -273,17 +273,6 @@ class StatFrame(wx.Frame):
         self.tree.SetItemImage(self.root, 10)
         self.tree.SetItemPyData(self.root, 1)
 
-        treeFont = self.tree.GetFont()
-        catFont = self.tree.GetFont()
-
-        # The old native treectrl on MSW has a bug where it doesn't
-        # draw all of the text for an item if the font is larger than
-        # the default.  It seems to be clipping the item's label as if
-        # it was the size of the same label in the default font.
-        if 'wxMSW' not in wx.PlatformInfo or wx.GetApp().GetComCtl32Version() >= 600:
-            treeFont.SetPointSize(treeFont.GetPointSize()+2)
-            treeFont.SetWeight(wx.BOLD)
-            catFont.SetWeight(wx.BOLD)
                     
         firstChild = None
         selectItem = None
@@ -291,7 +280,6 @@ class StatFrame(wx.Frame):
         for category, items in conf._treeList:
             if items:
                 child = self.tree.AppendItem(self.root, category, image=15)
-                self.tree.SetItemFont(child, catFont)
                 self.tree.SetItemPyData(child, 0)
                 if not firstChild: firstChild = child
                 for childItem in items:

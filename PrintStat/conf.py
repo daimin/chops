@@ -61,6 +61,9 @@ _treeList = [
 
 
 APP_NAME = "BPD百星打印中心日结登记系统"
+# 框架的宽度和高度
+FRAME_WIDTH = 1024
+FRAME_HEIGHT = 768
 #---------------------------------------------------------------------------------
 ALLOW_AUI_FLOATING = False
 DEFAULT_PERSPECTIVE = "Default Perspective"
@@ -80,33 +83,42 @@ log_dir = "log/"
 ENVIRONMENT = "DEV"
 #---------------------------------------------------------------------------
 
-mainOverview = """<html><body>
-<h2>wxPython</h2>
+#数据库配置 -------------------------------------------------------------
 
-<p> wxPython is a <b>GUI toolkit</b> for the Python programming
-language.  It allows Python programmers to create programs with a
-robust, highly functional graphical user interface, simply and easily.
-It is implemented as a Python extension module (native code) that
-wraps the popular wxWindows cross platform GUI library, which is
-written in C++.
+DB_FILE = "../data/printstat.db"
 
-<p> Like Python and wxWindows, wxPython is <b>Open Source</b> which
-means that it is free for anyone to use and the source code is
-available for anyone to look at and modify.  Or anyone can contribute
-fixes or enhancements to the project.
 
-<p> wxPython is a <b>cross-platform</b> toolkit.  This means that the
-same program will run on multiple platforms without modification.
-Currently supported platforms are 32-bit Microsoft Windows, most Unix
-or unix-like systems, and Macintosh OS X. Since the language is
-Python, wxPython programs are <b>simple, easy</b> to write and easy to
-understand.
+CUSTOM_TAB = "create table if not exists `customs`(name varchar(40) not null default '',\
+ `date` date not null default '0000-00-00',primary key(`name`))"
 
-<p> <b>This demo</b> is not only a collection of test cases for
-wxPython, but is also designed to help you learn about and how to use
-wxPython.  Each sample is listed in the tree control on the left.
-When a sample is selected in the tree then a module is loaded and run
-(usually in a tab of this notebook,) and the source code of the module
-is loaded in another tab for you to browse and learn from.
+PRINTER_TAB = "create table if not exists `printer`(\
+id varchar(40) not null default '', \
+`type` varchar(40) not null default '',\
+ANUM varchar(40) not null default '',\
+sqlnum varchar(20) not null default '',\
+`date` date not null default '0000-00-00'\
+,primary key(`id`))"
 
-"""
+ARCHIVES_TYPE_TAB = "create table if not exists `archives_type`(name varchar(20) not null default '',primary key(name))"
+
+ADMIN_TAB = "create table if not exists `admin`(name not null default '',password not null default '',primary key(name))"
+
+DAILY_STAT_TAB = \
+"create table if not exists `daily_stat`(\
+id integer primary key autoincrement,\
+`date` date not null default '0000-00-00',\
+PID varchar(40) not null default '',\
+customname varchar(40) not null default '',\
+archives_type varchar(20) not null default '',\
+num integer not null default 0,\
+post_time datetime not null default '0000-00-00 00:00:00',\
+finish_time datetime not null default '0000-00-00 00:00:00',\
+init_num integer not null default 0,\
+finish_num integer not null default 0,\
+adminname varchar(40) not null default '',\
+scrap_num integer not null default 0,\
+memo TEXT not null default ''\
+)"
+
+
+
