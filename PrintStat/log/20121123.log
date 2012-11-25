@@ -22,3 +22,104 @@
 [info]: 16时59分09秒: Running stat module...
 [info]: 16时59分12秒: Running stat module...
 [info]: 16时59分34秒: Running stat module...
+[info]: 20:57:09: Running stat module...
+[info]: 20:57:11: Running stat module...
+[info]: 20:57:14: Running stat module...
+[info]: 20:57:16: OnMaximize
+[info]: 20:59:01: Running stat module...
+[info]: 20:59:01: OnMaximize
+[info]: 20:59:07: OnCellLeftClick: (11,14) (501, 240)
+[info]: 20:59:07: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:07: OnCellLeftClick: (2,12) (292, 64)
+[info]: 20:59:07: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:08: OnCellLeftClick: (2,11) (195, 64)
+[info]: 20:59:08: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:13: OnCellLeftClick: (10,12) (321, 229)
+[info]: 20:59:13: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:13: OnSelectCell: Selected (10,12) (-1, -1)
+[info]: 20:59:13: OnCellLeftClick: (12,12) (309, 257)
+[info]: 20:59:13: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:13: OnSelectCell: Selected (12,12) (-1, -1)
+[info]: 20:59:13: OnCellLeftClick: (14,12) (300, 299)
+[info]: 20:59:13: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:13: OnSelectCell: Selected (14,12) (-1, -1)
+[info]: 20:59:13: OnRangeSelect: Selected  top-left (14, 12), bottom-right (15, 12)
+[info]: 20:59:13: OnCellLeftClick: (15,12) (300, 315)
+[info]: 20:59:13: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:13: OnSelectCell: Selected (15,12) (-1, -1)
+[info]: 20:59:18: OnCellLeftClick: (14,13) (396, 297)
+[info]: 20:59:18: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:18: OnSelectCell: Selected (14,13) (-1, -1)
+[info]: 20:59:18: OnCellLeftDClick: (14,13) (395, 296)
+[info]: 20:59:18: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:18: OnEditorShown: (14,13) (-1, -1)
+[info]: 20:59:18: OnEditorCreated: (14, 13) <wx._controls.TextCtrl; proxy of <Swig Object of type 'wxTextCtrl *' at 0x30058e8> >
+[info]: 20:59:18: OnEditorHidden: (14,13) (-1, -1)
+[info]: 20:59:18: OnCellLeftClick: (10,12) (292, 223)
+[info]: 20:59:18: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:18: OnSelectCell: Selected (10,12) (-1, -1)
+[info]: 20:59:18: OnCellLeftDClick: (10,12) (292, 223)
+[info]: 20:59:18: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:18: OnEditorShown: (10,12) (-1, -1)
+[info]: 20:59:19: OnEditorHidden: (10,12) (-1, -1)
+[info]: 20:59:19: OnCellLeftClick: (5,13) (375, 156)
+[info]: 20:59:19: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:19: OnCellLeftClick: (2,12) (262, 79)
+[info]: 20:59:19: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:20: OnCellLeftClick: (0,10) (126, 40)
+[info]: 20:59:20: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:20: OnSelectCell: Selected (0,10) (-1, -1)
+[info]: 20:59:20: OnCellLeftDClick: (0,10) (126, 40)
+[info]: 20:59:20: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:20: OnEditorShown: (0,10) (-1, -1)
+[info]: 20:59:24: OnEditorHidden: (0,10) (-1, -1)
+[info]: 20:59:24: OnCellLeftClick: (10,7) (811, 229)
+[info]: 20:59:24: OnRangeSelect: Deselected  top-left (0, 0), bottom-right (24, 24)
+[info]: 20:59:24: OnSelectCell: Selected (10,7) (-1, -1)
+[info]: 20:59:50: Running stat module...
+[info]: 20:59:50: OnMaximize
+[info]: 21:00:07: Running stat module...
+[info]: 21:00:07: OnMaximize
+[info]: 21:00:13: OnIconfiy: True
+[info]: 21:00:15: OnIconfiy: False
+[info]: 21:00:30: Running stat module...
+[info]: 21:00:30: OnMaximize
+[info]: 21:01:03: OnMaximize
+[info]: 21:01:03: Running stat module...
+[info]: 21:01:03: OnMaximize
+[info]: 21:01:03: OnMaximize
+[info]: 21:02:01: OnMaximize
+[info]: 21:02:01: Running stat module...
+[info]: 21:02:01: OnMaximize
+[info]: 21:02:01: OnMaximize
+[info]: 21:02:15: OnMaximize
+[info]: 21:02:15: Running stat module...
+[info]: 21:02:15: OnMaximize
+[info]: 21:02:15: OnMaximize
+[info]: 21:02:19: Running stat module...
+[info]: 21:03:05: OnMaximize
+[info]: 21:03:05: Running stat module...
+[info]: 21:03:05: OnMaximize
+[info]: 21:03:05: OnMaximize
+[info]: 21:03:24: OnMaximize
+[info]: 21:03:24: Running stat module...
+[info]: 21:03:24: OnMaximize
+[info]: 21:03:24: OnMaximize
+[info]: 21:05:18: OnMaximize
+[info]: 21:05:18: Running stat module...
+[info]: 21:05:18: OnMaximize
+[info]: 21:05:18: OnMaximize
+[info]: 21:06:34: OnMaximize
+[info]: 21:06:34: Running stat module...
+[info]: 21:06:34: OnMaximize
+[info]: 21:06:34: OnMaximize
+[info]: 21:06:36: Running stat module...
+[info]: 21:06:44: OnMaximize
+[info]: 21:06:44: Running stat module...
+[info]: 21:06:44: OnMaximize
+[info]: 21:06:44: OnMaximize
+[info]: 21:06:45: Running stat module...
+[info]: 21:08:54: OnMaximize
+[info]: 21:08:54: Running stat module...
+[info]: 21:08:54: OnMaximize
+[info]: 21:08:54: OnMaximize

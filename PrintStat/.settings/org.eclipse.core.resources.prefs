@@ -1,3 +1,4 @@
+#Mon Nov 26 00:15:02 CST 2012
 eclipse.preferences.version=1
 encoding//dbs/db.py=utf-8
 encoding//dbs/db_init.py=utf-8
@@ -9,6 +10,7 @@ encoding//ui/stat_tree.py=utf-8
 encoding//ui/statapp.py=utf-8
 encoding//ui/statdialog.py=utf-8
 encoding//ui/statframe.py=utf-8
+encoding//ui/statlog.py=utf-8
 encoding/conf.py=utf-8
 encoding/functions.py=utf-8
 encoding/main.py=utf-8

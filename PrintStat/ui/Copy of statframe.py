@@ -12,6 +12,7 @@ import wx
 import wx.aui
 
 import images as em_images
+
 import stat_tree
 import modules
 import statlog
@@ -21,6 +22,7 @@ from functions import *
 
 
 class StatFrame(wx.Frame):
+    overviewText = "wxPython Overview"
 
     def __init__(self, parent, title):
 
@@ -34,9 +36,8 @@ class StatFrame(wx.Frame):
         pnl = wx.Panel(self)
         self.pnl = pnl
         
-        self.mgr = wx.aui.AuiManager() 
+        self.mgr = wx.aui.AuiManager()
         self.mgr.SetManagedWindow(pnl)
-        
         
         self.loaded = False
         self.cwd = os.getcwd()
@@ -58,7 +59,8 @@ class StatFrame(wx.Frame):
 
         self.dying = False 
         self.skipLoad = False
-    
+        
+        def EmptyHandler(evt): pass
 
         self.ReadConfigurationFile()
         self.externalDemos = HuntExternalDemos()
@@ -72,7 +74,6 @@ class StatFrame(wx.Frame):
             imgList.Add(bmp)
         self.nb.AssignImageList(imgList)
 
-        
         self.BuildMenuBar()
         
 
@@ -91,6 +92,9 @@ class StatFrame(wx.Frame):
         self.tree.Bind(wx.EVT_LEFT_DOWN, self.OnTreeLeftDown)
         
         
+        panel = wx.Panel(self.nb, -1, style=wx.CLIP_CHILDREN)
+        
+        panel.Bind(wx.EVT_ERASE_BACKGROUND, EmptyHandler)
 
         # Set the wxWindows log target to be this textctrl
         # 日志文件处理
@@ -331,7 +335,15 @@ class StatFrame(wx.Frame):
         
         mid = self.tree.GetItemIdentity(item)
         self.LoadMudule(mid)
-
+    
+    def ExitMessageBox(self):
+        """生成退出的消息对话框
+        """
+        retCode = MessageBox("确认退出系统","退出")
+        if retCode == wx.YES:
+            self.Close()
+        else:
+            pass
 
     #---------------------------------------------
     def LoadMudule(self, mId):
@@ -391,7 +403,7 @@ class StatFrame(wx.Frame):
     #---------------------------------------------
     # Menu methods
     def OnFileExit(self, *event):
-        self.Close()
+        self.ExitMessageBox()
 
 
 

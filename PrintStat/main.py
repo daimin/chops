@@ -6,7 +6,7 @@ Created on 2012-11-19
 
 @author: daimin
 '''
-import os
+import os 
 
 import ui.statapp
 
@@ -17,6 +17,7 @@ def main():
     except:
         pass
     app = ui.statapp.StatApp(False)
+    
     app.MainLoop()
     
 

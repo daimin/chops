@@ -1,0 +1,122 @@
+[info]: 00:01:36: OnMaximize
+[info]: 00:01:36: Running stat module...
+[info]: 00:01:36: OnMaximize
+[info]: 00:01:36: OnMaximize
+[info]: 00:01:47: OnIconfiy: True
+[info]: 00:01:48: Debug: ..\..\src\msw\window.cpp(643): 'SetFocus' failed with error 0x00000057 (参数错误。).
+[info]: 00:01:48: OnIconfiy: False
+[info]: 00:02:04: Running stat module...
+[info]: 00:02:05: Running stat module...
+[info]: 00:02:06: OnItemCollapsed: 设备管理
+[info]: 00:02:06: Running stat module...
+[info]: 00:02:07: OnItemCollapsed: 客户管理
+[info]: 00:02:07: OnItemExpanded: 设备管理
+[info]: 00:02:08: Running stat module...
+[info]: 00:02:08: OnItemCollapsed: 报表管理
+[info]: 00:02:09: Running stat module...
+[info]: 00:02:10: Running stat module...
+[info]: 00:02:10: OnItemExpanded: 报表管理
+[info]: 00:02:10: Running stat module...
+[info]: 00:02:11: Running stat module...
+[info]: 00:02:11: OnItemCollapsed: 报表管理
+[info]: 00:02:12: Running stat module...
+[info]: 00:02:12: OnItemCollapsed: 设备管理
+[info]: 00:02:13: Running stat module...
+[info]: 00:02:13: OnItemExpanded: 报表管理
+[info]: 00:02:13: Running stat module...
+[info]: 00:02:28: OnMaximize
+[info]: 00:02:28: Running stat module...
+[info]: 00:02:28: OnMaximize
+[info]: 00:02:28: OnMaximize
+[info]: 00:02:48: OnMaximize
+[info]: 00:02:48: Running stat module...
+[info]: 00:02:49: OnMaximize
+[info]: 00:02:49: OnMaximize
+[info]: 00:02:56: OnMaximize
+[info]: 00:02:59: OnIconfiy: True
+[info]: 00:03:00: Debug: ..\..\src\msw\window.cpp(643): 'SetFocus' failed with error 0x00000057 (参数错误。).
+[info]: 00:03:00: OnIconfiy: False
+[info]: 00:03:03: OnIconfiy: True
+[info]: 00:03:04: Debug: ..\..\src\msw\window.cpp(643): 'SetFocus' failed with error 0x00000057 (参数错误。).
+[info]: 00:03:04: OnIconfiy: False
+[info]: 00:03:05: OnMaximize
+[info]: 00:08:46: OnMaximize
+[info]: 00:08:46: Running stat module...
+[info]: 00:08:47: OnMaximize
+[info]: 00:08:47: OnMaximize
+[info]: 00:09:34: OnMaximize
+[info]: 00:09:34: Running stat module...
+[info]: 00:09:34: OnMaximize
+[info]: 00:09:34: OnMaximize
+[info]: 00:09:46: OnMaximize
+[info]: 00:09:46: Running stat module...
+[info]: 00:09:46: OnMaximize
+[info]: 00:09:46: OnMaximize
+[info]: 00:09:49: OnMaximize
+[info]: 00:10:01: OnMaximize
+[info]: 00:10:01: Running stat module...
+[info]: 00:10:01: OnMaximize
+[info]: 00:10:01: OnMaximize
+[info]: 00:10:19: OnMaximize
+[info]: 00:10:19: Running stat module...
+[info]: 00:10:19: OnMaximize
+[info]: 00:10:19: OnMaximize
+[info]: 00:10:27: OnMaximize
+[info]: 00:10:27: Running stat module...
+[info]: 00:10:27: OnMaximize
+[info]: 00:10:27: OnMaximize
+[info]: 00:11:04: OnMaximize
+[info]: 00:11:04: Running stat module...
+[info]: 00:11:04: OnMaximize
+[info]: 00:11:04: OnMaximize
+[info]: 00:11:22: OnMaximize
+[info]: 00:11:22: OnMaximize
+[info]: 00:11:22: OnMaximize
+[info]: 00:12:20: OnMaximize
+[info]: 00:12:20: Running stat module...
+[info]: 00:12:20: OnMaximize
+[info]: 00:12:20: OnMaximize
+[info]: 00:12:51: OnMaximize
+[info]: 00:12:51: Running stat module...
+[info]: 00:12:51: OnMaximize
+[info]: 00:12:51: OnMaximize
+[info]: 00:12:59: OnMaximize
+[info]: 00:12:59: Running stat module...
+[info]: 00:12:59: OnMaximize
+[info]: 00:12:59: OnMaximize
+[info]: 00:13:21: OnMaximize
+[info]: 00:13:21: Running stat module...
+[info]: 00:13:21: OnMaximize
+[info]: 00:13:21: OnMaximize
+[info]: 00:13:30: OnMaximize
+[info]: 00:13:30: Running stat module...
+[info]: 00:13:30: OnMaximize
+[info]: 00:13:30: OnMaximize
+[info]: 00:13:48: OnMaximize
+[info]: 00:13:48: Running stat module...
+[info]: 00:13:48: OnMaximize
+[info]: 00:13:48: OnMaximize
+[info]: 00:14:08: OnMaximize
+[info]: 00:14:08: Running stat module...
+[info]: 00:14:08: OnMaximize
+[info]: 00:14:08: OnMaximize
+[info]: 00:14:21: OnMaximize
+[info]: 00:14:21: Running stat module...
+[info]: 00:14:21: OnMaximize
+[info]: 00:14:21: OnMaximize
+[info]: 00:15:18: OnMaximize
+[info]: 00:15:19: Running stat module...
+[info]: 00:15:19: OnMaximize
+[info]: 00:15:19: OnMaximize
+[info]: 00:15:57: OnMaximize
+[info]: 00:15:57: Running stat module...
+[info]: 00:15:57: OnMaximize
+[info]: 00:15:57: OnMaximize
+[info]: 00:16:52: OnMaximize
+[info]: 00:16:52: Running stat module...
+[info]: 00:16:52: OnMaximize
+[info]: 00:16:52: OnMaximize
+[info]: 00:17:16: OnMaximize
+[info]: 00:17:16: Running stat module...
+[info]: 00:17:16: OnMaximize
+[info]: 00:17:16: OnMaximize

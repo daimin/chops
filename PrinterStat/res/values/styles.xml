@@ -16,6 +16,7 @@
     <style name="AppTheme" parent="AppBaseTheme">
            <item name="android:windowBackground">@drawable/bg_hui</item>
            <item name="android:backgroundDimEnabled">false</item>
+           <item name="android:textSize">14sp</item>
     </style>
 
 </resources>

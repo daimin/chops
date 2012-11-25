@@ -6,9 +6,11 @@ Created on 2012-11-19
 
 @author: daimin
 '''
+
 import wx
 import version
 import statframe
+import statlog
 
 from functions import *
 
@@ -43,17 +45,14 @@ class StatSplashScreen(wx.SplashScreen):
         
 
 class StatApp(wx.App):
+
+    def __init__(self, redirect):
+        wx.App.__init__(self, redirect)
+        
     def OnInit(self):
-
-        # Check runtime version
-        """
-        if version.VERSION_STRING != wx.VERSION_STRING:
-            wx.MessageBox(caption="Warning",
-                          message="You're using version %s of wxPython, but this copy of the demo was written for version %s.\n"
-                          "There may be some version incompatibilities..."
-                          % (wx.VERSION_STRING, version.VERSION_STRING))
-        """
-
+        
+        wx.Log_SetActiveTarget(statlog.StatLog())
+        
         # Now that we've warned the user about possibile problems,
         # lets import images
         import images as i
@@ -70,7 +69,12 @@ class StatApp(wx.App):
       
         #splash = StatSplashScreen()
         #splash.Show()
-
+        
         frame = statframe.StatFrame(None, conf.APP_NAME)
-        frame.Show()
+        frame.Show(True)
+        
+        self.SetTopWindow(frame)
+        
         return True
+    
+
