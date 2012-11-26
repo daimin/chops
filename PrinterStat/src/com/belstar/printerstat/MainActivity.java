@@ -25,10 +25,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
-import android.text.InputType;
-import android.view.View;
-import android.view.View.OnClickListener;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,7 +72,7 @@ public class MainActivity extends Activity {
 		}
 		
 		public void run() {
-			HttpPost post = new HttpPost(Config.URL);
+			HttpPost post = new HttpPost(Config.PUT_URL);
 
 			ByteArrayEntity contents = new ByteArrayEntity(this.xmldata.getBytes());
 			post.setEntity(contents);
@@ -89,6 +86,15 @@ public class MainActivity extends Activity {
 	}
 	
 	MyThread mThread = null;
+	
+	InitThread mInitThread = null;
+	
+	class InitThread extends Thread{
+		@Override
+		public void run() {
+			
+		}
+	}
 
 	
 	
@@ -102,6 +108,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		String data = this.getIntent().getStringExtra(Config.GET_DATA_KEY);
 
 /*		mNum = (EditText) findViewById(R.id.num);
 		mXinghao = (EditText) findViewById(R.id.xinghao);

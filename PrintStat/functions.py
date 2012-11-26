@@ -89,19 +89,7 @@ def GetConfig():
     config = wx.FileConfig(
         localFilename=os.path.join(GetDataDir(), "options"))
     return config
-
-
-def SearchDemo(name, keyword):
-    """ Returns whether a demo contains the search keyword or not. """
-    fid = open(GetOriginalFilename(name), "rt")
-    fullText = fid.read()
-    fid.close()
-    if type(keyword) is unicode:
-        fullText = fullText.decode('iso8859-1')
-    if fullText.find(keyword) >= 0:
-        return True
-
-    return False    
+   
 
 
 def HuntExternalDemos():
@@ -202,3 +190,10 @@ def write_log(file_object, logline, ltype = 1):
         prefix = 'info'
     if file_object:
         file_object.write("[%s]: %s\n" % (prefix, logline))
+        
+def array2xml(arr):
+    xmltext = ''
+    for li in arr:
+        xmltext = '%s<item>%s</item>' %(xmltext,li)
+    return xmltext
+        
