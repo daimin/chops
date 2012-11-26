@@ -3,6 +3,7 @@
 
     <string name="app_name">百星打印中心日结登记系统</string>
     <string name="hit_printer_ID">打印机型号</string>
+    <string name="hit_custom">客户名称</string>
     <string name="hit_admin">管理员</string>
     <string name="hit_archives_type">档案类型</string>
     <string name="hit_archives_num">档案本数</string>

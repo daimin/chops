@@ -9,7 +9,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+
+import com.belstar.printerstat.Config;
 
 public class NetUtil {
 
@@ -34,7 +39,7 @@ public class NetUtil {
 			}
 		return null;
 	}
-	
+
 	/**
 	 * 读取输入流中传入的字符串
 	 * 
@@ -55,23 +60,35 @@ public class NetUtil {
 		}
 		return null;
 	}
-	
-	
-	public static HttpResponse MakeRequest(HttpUriRequest areq) {
-		DefaultHttpClient HttpManager = new DefaultHttpClient();
+
+	public static HttpResponse MakeRequest(HttpUriRequest areq) throws ConnectTimeoutException {
+		BasicHttpParams httpParameters = new BasicHttpParams();// Set the
+																// timeout in
+																// milliseconds
+																// until a
+																// connection is
+																// established.
+		HttpConnectionParams.setConnectionTimeout(httpParameters,
+				Config.LOADING_TIMEOUT);
+		// Set the default socket timeout (SO_TIMEOUT) // in milliseconds which
+		// is the timeout for waiting for data.
+		HttpConnectionParams.setSoTimeout(httpParameters,
+				Config.LOADING_TIMEOUT);
+		DefaultHttpClient HttpManager = new DefaultHttpClient(httpParameters);
+
+		
+		HttpResponse response = null;
 		try {
-			final HttpResponse response = HttpManager.execute(areq);
-			return response;
+			response = HttpManager.execute(areq);
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
-		return null;
+		return response;
 
 	}
-	
+
 	/**
 	 * 得到服务器响应的返回的输入流
 	 * 

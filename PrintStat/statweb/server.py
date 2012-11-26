@@ -10,7 +10,6 @@ os.chdir("statweb")
 import web
 
 
-
 import dbs.query
 
 import conf
@@ -45,6 +44,7 @@ class index:
         
         xmltext = "%s</data>" %(xmltext)
 
+        dbs.query.close()
         return xmltext
 
 if __name__ == "__main__":

@@ -21,6 +21,6 @@ class Db(object):
     
     @staticmethod
     def close():
-        if Db.conn is not None:
+        if Db.conn <> None:
             Db.conn.close()
             Db.conn = None

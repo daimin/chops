@@ -64,6 +64,8 @@ def get_printer_admins():
     cur.close()
     return adminnames
 
+def close():
+    db.Db.close()
 
 if __name__ == "__main__":
     print get_printer_ids()

@@ -2,32 +2,34 @@ package com.belstar.printerstat.util;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.util.Log;
+
 public class XmlGeter {
 	
-	private String xmlText = "";
-	
+
+
 	private List<String> printerIDs = null;
 	private List<String> customNames = null;
 	private List<String> adminNames = null;
 	private List<String> archivesTypes = null;
 	
 	public XmlGeter(String xmlText){
-		this.xmlText = xmlText;
 		parse(xmlText);
 	}
 
 	private void parse(String xmlText) {
+		Log.i("XmlGeter", xmlText);
 		if (null == xmlText || xmlText.trim().length() <= 0) {
-			
 			return;
 		}
-		
+		List <String>curList = null;
 		xmlText = xmlText.trim();
 		XmlPullParserFactory factory;
 		try {
@@ -44,7 +46,26 @@ public class XmlGeter {
 
 					break;
 				case XmlPullParser.START_TAG:
-					if (parser.getName().equals("err")) {
+					if (parser.getName().equals("items")) {
+						if(parser.getAttributeValue(0).equals("printer")){
+							printerIDs = new ArrayList<String>();
+							curList = printerIDs;
+						}else if(parser.getAttributeValue(0).equals("custom")){
+							customNames = new ArrayList<String>();
+							curList = customNames;
+						}else if(parser.getAttributeValue(0).equals("archives_type")){
+							archivesTypes = new ArrayList<String>();
+							curList = archivesTypes;
+						}else if(parser.getAttributeValue(0).equals("admin")){
+							adminNames = new ArrayList<String>();
+							curList = adminNames;
+						}
+					}
+					
+					if(parser.getName().equals("item")){
+						if(null != curList){
+							curList.add(parser.nextText());
+						}
 						
 					}
 
@@ -52,6 +73,9 @@ public class XmlGeter {
 				case XmlPullParser.TEXT:
 					break;
 				case XmlPullParser.END_TAG:
+					if(parser.getName().equals("items")){
+						curList = null;
+					}
 					break;
 				case XmlPullParser.END_DOCUMENT:
 					break;
@@ -65,6 +89,22 @@ public class XmlGeter {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public List<String> getPrinterIDs() {
+		return printerIDs;
+	}
+
+	public List<String> getCustomNames() {
+		return customNames;
+	}
+
+	public List<String> getAdminNames() {
+		return adminNames;
+	}
+
+	public List<String> getArchivesTypes() {
+		return archivesTypes;
 	}
 	
 	
