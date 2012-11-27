@@ -3,21 +3,42 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingLeft="12sp"
-            android:text="@string/hit_printer_ID"
-            android:textColor="@drawable/blue"
-            android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+         >
+
+        <ImageView
+            android:id="@+id/icon"
+            android:tag="iv_icon"
+            android:layout_width="16dip"
+            android:layout_height="16dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/gongwenbao"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="4dip"
+             />
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:paddingLeft="12sp"
-            android:text="@string/hit_printer_ID"
-            android:textColor="@drawable/sblue"
-            android:textSize="10sp"
+            android:tag="tv_title"
+            android:textColor="@drawable/white"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/icon"
              />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingLeft="12sp"
+        android:tag="tv_sel"
+        android:textColor="@drawable/darkgrey"
+        android:textSize="10sp" />
 
 </LinearLayout>

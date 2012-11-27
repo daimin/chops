@@ -3,6 +3,7 @@
   <color name="transparent">#00000000</color>
   <color name="lightgrey">#FFF5F5F5</color>
   <drawable name="white">#FFFFFFFF</drawable>
+  <drawable name="darkgrey">#FFD5D5D5</drawable>
   <drawable name="black">#000000</drawable>
   <drawable name="blue">#0000FF</drawable>
   <drawable name="mi">#FEFFF5</drawable>

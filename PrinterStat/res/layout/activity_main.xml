@@ -15,64 +15,33 @@
 
             <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
+                android:layout_height="wrap_content" 
+                android:background="@drawable/sblue"
+                android:layout_marginBottom="1dip"
+                android:tag="@string/hit_printer_ID"
+                />
+            <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="96dip"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="12sp"
-                    android:text="@string/hit_custom"
-                    android:textColor="@drawable/blue"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/custName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
+                android:layout_height="wrap_content" 
+                android:background="@drawable/sblue"
+                android:layout_marginBottom="1dip"
+                android:tag="@string/hit_custom"
+                />
+           <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="96dip"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="12sp"
-                    android:text="@string/hit_admin"
-                    android:textColor="@drawable/blue"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/adminName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
+                android:layout_height="wrap_content" 
+                android:background="@drawable/sblue"
+                android:layout_marginBottom="1dip"
+                android:tag="@string/hit_admin"
+                />
+           
+           <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="96dip"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="12sp"
-                    android:text="@string/hit_archives_type"
-                    android:textColor="@drawable/blue"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:id="@+id/archivesType"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:layout_height="wrap_content" 
+                android:background="@drawable/sblue"
+                android:layout_marginBottom="1dip"
+                android:tag="@string/hit_archives_type"
+                />
 
             <EditText
                 android:id="@+id/archivesNum"
