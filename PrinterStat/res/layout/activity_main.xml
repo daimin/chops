@@ -9,102 +9,69 @@
         android:scrollbars="vertical" >
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" >
+
+            <com.belstar.printerstat.StatSelView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="96dip"
                     android:layout_height="wrap_content"
-                    android:text="@string/hit_printer_ID"
-                    android:textColor="@drawable/blue"
-                    android:textStyle="bold"
                     android:paddingLeft="12sp"
-                     />
-
-                <Spinner
-                    android:id="@+id/deviceNo"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_height="wrap_content"
-                     />
-            </LinearLayout>
-            
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="@string/hit_custom"
                     android:textColor="@drawable/blue"
-                    android:textStyle="bold"
-                    android:paddingLeft="12sp"
-                     />
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/custName"
-                    android:layout_weight="3"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-            
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
+                    android:layout_width="96dip"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="12sp"
                     android:text="@string/hit_admin"
                     android:textColor="@drawable/blue"
-                    android:textStyle="bold"
-                    android:paddingLeft="12sp"
-                     />
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/adminName"
                     android:layout_width="wrap_content"
-                    android:layout_weight="3"
-                    android:layout_height="wrap_content"
-                     />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
-
-           
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" 
-                >
+                android:orientation="horizontal" >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="96dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:paddingLeft="12sp"
                     android:text="@string/hit_archives_type"
                     android:textColor="@drawable/blue"
-                    android:textStyle="bold" 
-                    android:paddingLeft="12sp"
-                    />
+                    android:textStyle="bold" />
 
                 <Spinner
                     android:id="@+id/archivesType"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <EditText

@@ -1,0 +1,23 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="12sp"
+            android:text="@string/hit_printer_ID"
+            android:textColor="@drawable/blue"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingLeft="12sp"
+            android:text="@string/hit_printer_ID"
+            android:textColor="@drawable/sblue"
+            android:textSize="10sp"
+             />
+
+</LinearLayout>

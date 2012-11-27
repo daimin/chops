@@ -12,6 +12,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -78,7 +79,13 @@ public class MainActivity extends Activity {
 
 			ByteArrayEntity contents = new ByteArrayEntity(this.xmldata.getBytes());
 			post.setEntity(contents);
-			String res = NetUtil.GetStringEntity(NetUtil.MakeRequest(post)); 
+			String res = null;
+			try {
+				res = NetUtil.GetStringEntity(NetUtil.MakeRequest(post));
+			} catch (ConnectTimeoutException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 			if(res.equals("success")){
 				Message msg = mHandler.obtainMessage();
 				msg.what = 2;
@@ -142,17 +149,17 @@ public class MainActivity extends Activity {
 		
 		memoEdit = (EditText) findViewById(R.id.memo);
 		
-		deviceNo = (Spinner) findViewById(R.id.deviceNo);
-		deviceNo.setAdapter(getDeviceNos(xmlGeter));	
-		
-		adminName = (Spinner) findViewById(R.id.adminName);
-		adminName.setAdapter(getAdminNames(xmlGeter)); 
-		
-		custName = (Spinner) findViewById(R.id.custName);
-		custName.setAdapter(getCustNames(xmlGeter));
-		
-		archivesType = (Spinner) findViewById(R.id.archivesType);
-		archivesType.setAdapter(getArchivesTypes(xmlGeter));
+//		deviceNo = (Spinner) findViewById(R.id.deviceNo);
+//		deviceNo.setAdapter(getDeviceNos(xmlGeter));	
+//		
+//		adminName = (Spinner) findViewById(R.id.adminName);
+//		adminName.setAdapter(getAdminNames(xmlGeter)); 
+//		
+//		custName = (Spinner) findViewById(R.id.custName);
+//		custName.setAdapter(getCustNames(xmlGeter));
+//		
+//		archivesType = (Spinner) findViewById(R.id.archivesType);
+//		archivesType.setAdapter(getArchivesTypes(xmlGeter));
 	}
 	
 	private SpinnerAdapter getAdminNames(XmlGeter xmlGeter) {
