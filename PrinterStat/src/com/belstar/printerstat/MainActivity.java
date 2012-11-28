@@ -24,14 +24,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -111,7 +115,7 @@ public class MainActivity extends Activity {
 
 		String data = this.getIntent().getStringExtra(Config.GET_DATA_KEY);
 
-		final XmlGeter xmlGeter = new XmlGeter(data);
+		initSelView(data);
 
 		/*
 		 * mNum = (EditText) findViewById(R.id.num); mXinghao = (EditText)
@@ -132,16 +136,51 @@ public class MainActivity extends Activity {
 
 		memoEdit = (EditText) findViewById(R.id.memo);
 
+		
+
+	}
+	
+
+	private void initSelView(String txtData){
+		final XmlGeter xmlGeter = new XmlGeter(txtData);
+
 		deviceNo = (StatSelView) findViewById(R.id.deviceNo);
 		deviceNo.setInitTvSelText(xmlGeter.getPrinterIDs());
 		deviceNo.setOnClickListener(new View.OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "dialog", Toast.LENGTH_LONG)
-						.show();
-				StatDialog dialog2 = new StatDialog(MainActivity.this,  R.style.Theme_dialog, xmlGeter.getPrinterIDs());
-				dialog2.show();// 显示Dialog
+			public void onClick(final View v) {
+				final StatSelView ssv = (StatSelView) v;
+				final String[] arrPrinterIdArr = toArray(xmlGeter
+						.getPrinterIDs());
+				
+				new AlertDialog.Builder(MainActivity.this)
+				        .setTitle(MainActivity.this.getResources().getString(R.string.hit_printer_ID))
+				        .setIcon(android.R.drawable.ic_menu_more)
+				        .setNeutralButton("取消", new DialogInterface.OnClickListener(){
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.dismiss();
+								
+							}
+				        	
+				        })
+						.setSingleChoiceItems(arrPrinterIdArr,
+								ssv.getChckItem(),
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+
+										ssv.setChckItem(which);
+										ssv.setTvSelText(arrPrinterIdArr[which]);
+
+										dialog.dismiss();
+
+									}
+								}).create().show();
 
 			}
 		});
@@ -167,7 +206,16 @@ public class MainActivity extends Activity {
 
 		adminName = (StatSelView) findViewById(R.id.adminName);
 		adminName.setInitTvSelText(xmlGeter.getAdminNames());
+	}
+	
+	private String[] toArray(List<String> strList) {
+		int listLen = strList.size();
+		String[] strArr = new String[listLen];
+		for (int i = 0; i < listLen; i++) {
+			strArr[i] = strList.get(i);
+		}
 
+		return strArr;
 	}
 
 }

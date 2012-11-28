@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">百星打印中心日结登记系统</string>
+    <string name="app_name">百星子</string>
     <string name="hit_printer_ID">打印机型号</string>
     
     <string name="hit_custom">客户名称</string>
@@ -23,5 +23,6 @@
     <!-- StatSelView的图标控件TAG -->
     <string name="tag_iv_icon">iv_icon</string>
     <string name="desc_iv_icon">选择View标识图标</string>
+    
     
 </resources>

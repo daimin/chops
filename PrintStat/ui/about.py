@@ -6,7 +6,7 @@ import wx.lib.wxpTag
 
 #---------------------------------------------------------------------------
 
-class AboutBox(wx.Dialog):
+class MyAboutBox(wx.Dialog):
     text = '''
 <html>
 <body bgcolor="#AC76DE">
@@ -66,8 +66,8 @@ demo item so you can learn how to use the classes yourself.</p>
 
 
 if __name__ == '__main__':
-    app = wx.App()
-    dlg = AboutBox(None)
+    app = wx.PySimpleApp()
+    dlg = MyAboutBox(None)
     dlg.ShowModal()
     dlg.Destroy()
     app.MainLoop()

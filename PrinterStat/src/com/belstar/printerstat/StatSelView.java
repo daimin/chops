@@ -25,6 +25,11 @@ public class StatSelView extends LinearLayout {
 	private View sel_item;
 	private TextView tvTitle;
 	private TextView tvSel;
+	
+	private int chckItem = 0;
+
+
+
 
 
 	private ImageView ivIcon;
@@ -83,6 +88,10 @@ public class StatSelView extends LinearLayout {
 			this.tvSel.setText(selList.get(0));
 		}
 	}
+	
+	public void setTvSelText(String txt){
+		this.tvSel.setText(txt);
+	}
 
 	
 	@Override
@@ -91,13 +100,19 @@ public class StatSelView extends LinearLayout {
 		if(action == MotionEvent.ACTION_DOWN){
 			bg = this.getBackground();
 			this.setBackgroundDrawable(this.getResources().getDrawable(R.drawable.tyellow));
-		}else if(action == MotionEvent.ACTION_UP){
+		}else{
 			this.setBackgroundDrawable(bg);
-			
 		}
 		
 		return super.onTouchEvent(event);
 		
 	}
 
+	public int getChckItem() {
+		return chckItem;
+	}
+
+	public void setChckItem(int chckItem) {
+		this.chckItem = chckItem;
+	}
 }
