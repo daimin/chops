@@ -12,4 +12,5 @@
   <drawable name="brown">#D7D7D7</drawable>
   <drawable name="green">#23F38E</drawable>
   <drawable name="tgreen">#AA00FF00</drawable>
+  <drawable name="tyellow">#88DBDD00</drawable>
 </resources>

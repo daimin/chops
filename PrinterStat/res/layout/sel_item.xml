@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+     >
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -11,7 +12,7 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:tag="iv_icon"
+            android:tag="@string/tag_iv_icon"
             android:layout_width="16dip"
             android:layout_height="16dip"
             android:layout_alignParentLeft="true"
@@ -21,12 +22,13 @@
             android:src="@drawable/gongwenbao"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="4dip"
+            android:contentDescription="@string/desc_iv_icon"
              />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:tag="tv_title"
+            android:tag="@string/tag_tv_title"
             android:textColor="@drawable/white"
             android:textStyle="bold"
             android:layout_toRightOf="@id/icon"
@@ -36,9 +38,11 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingLeft="12sp"
-        android:tag="tv_sel"
+        android:paddingLeft="24dip"
+        android:tag="@string/tag_tv_sel"
         android:textColor="@drawable/darkgrey"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:layout_marginBottom="4dip"
+         />
 
 </LinearLayout>

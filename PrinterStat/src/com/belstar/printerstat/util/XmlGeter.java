@@ -25,7 +25,6 @@ public class XmlGeter {
 	}
 
 	private void parse(String xmlText) {
-		Log.i("XmlGeter", xmlText);
 		if (null == xmlText || xmlText.trim().length() <= 0) {
 			return;
 		}

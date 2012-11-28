@@ -16,31 +16,43 @@
             <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" 
+                android:paddingTop="4dip"
                 android:background="@drawable/sblue"
                 android:layout_marginBottom="1dip"
                 android:tag="@string/hit_printer_ID"
+                android:id="@+id/deviceNo"
+                android:clickable="true"
                 />
             <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" 
+                 android:paddingTop="4dip"
                 android:background="@drawable/sblue"
                 android:layout_marginBottom="1dip"
                 android:tag="@string/hit_custom"
+                android:id="@+id/customName"
+                android:clickable="true"
                 />
            <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" 
+                 android:paddingTop="4dip"
                 android:background="@drawable/sblue"
                 android:layout_marginBottom="1dip"
                 android:tag="@string/hit_admin"
+                android:id="@+id/adminName"
+                android:clickable="true"
                 />
            
            <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" 
+                 android:paddingTop="4dip"
                 android:background="@drawable/sblue"
                 android:layout_marginBottom="1dip"
                 android:tag="@string/hit_archives_type"
+                android:id="@+id/archivesType"
+                android:clickable="true"
                 />
 
             <EditText
