@@ -16,6 +16,7 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.belstar.printerstat.util.FileOperator;
 import com.belstar.printerstat.util.NetUtil;
 import com.belstar.printerstat.util.XmlGeter;
 
@@ -44,6 +45,12 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
 	public static final int FILE_WRITE_WHAT = 3;
+	public static final int FILE_READ_WHAT = 4;
+	
+	public static final int UI_FILE_WRITE_WHAT = 5;
+	public static final int UI_FILE_READ_WHAT = 6;
+	
+	
 	public static final int SEND_WHAT = 1;
 	public static final int SUCCESS_WHAT = 2;
 	
@@ -71,9 +78,32 @@ public class MainActivity extends Activity {
 						.setMessage("数据发送成功").setPositiveButton("确定", null)
 						.show();
 
-			}else if(msg.what == FILE_WHAT){
+			}else if(msg.what == FILE_WRITE_WHAT){
+				Bundle data = msg.getData();
+				String xmlData = data.getString(Config.GET_DATA_KEY);
+				FileOperator.writeXMlDataFile(MainActivity.this, xmlData);
+			}else if(msg.what == FILE_READ_WHAT){
 				
+				String xmlData = FileOperator.readXmlDataFile(MainActivity.this);
+				initSelView(xmlData);
 			}
+		}
+
+	};
+	
+	Handler mUIHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == UI_FILE_READ_WHAT) {
+				Bundle data = msg.getData();
+				String xinghao = data.getString("xinghao");
+				String num = data.getString("num");
+				String xmldata = "<data><xinghao>" + xinghao
+						+ "</xinghao><num>" + num + "</num></data>";
+				mThread = new MyThread(xmldata);
+				mThread.start();
+			} 
 		}
 
 	};
@@ -113,10 +143,17 @@ public class MainActivity extends Activity {
 	class InitThread extends Thread {
 		@Override
 		public void run() {
-
+            
 		}
 	}
 	
+	
+	private void alertDialog(String title, String content){
+		new AlertDialog.Builder(MainActivity.this).setTitle(title)
+		.setIcon(this.getResources().getDrawable(android.R.drawable.ic_dialog_alert))
+		.setMessage(content).setPositiveButton(this.getResources().getString(R.string.dialog_ok), null)
+		.show();
+	}
 	
 
 	@Override
@@ -128,28 +165,37 @@ public class MainActivity extends Activity {
 		String data = this.getIntent().getStringExtra(Config.GET_DATA_KEY);
 		if(data == null || data.length() <= 0){
 			data = this.getIntent().getStringExtra(Config.TIMEOUT_KEY);
-			getFromNet = true;
-
-		}
-		if(data != null && data.length() > 0){
-			Toast.makeText(this, data, Toast.LENGTH_LONG).show();
 		}else{
-			data = this.getIntent().getStringExtra(Config.NO_NET_CONN_KEY);
+			getFromNet = true;
 		}
-		
-		if(data != null && data.length() > 0){
-			Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+		if(getFromNet == false){
+			String netDialogTitle = this.getResources().getString(R.string.dialog_net_title);
+			if(data != null && data.length() > 0){
+				//Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+				alertDialog(netDialogTitle, data);
+			}else{
+				data = this.getIntent().getStringExtra(Config.NO_NET_CONN_KEY);
+				if(data != null && data.length() > 0){
+					//Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+					alertDialog(netDialogTitle, data);
+				}
+			}
+			
 		}
+
 		
 		if(getFromNet){
 			initSelView(data);
 			Message msg = mHandler.obtainMessage();
+			Bundle bundle = new Bundle();
+			bundle.putString(Config.GET_DATA_KEY, data);
+			msg.setData(bundle);
 			msg.what = FILE_WRITE_WHAT;
-			mHandler.sendEmptyMessage(FILE_WRITE_WHAT);
+			mHandler.sendMessage(msg);
 		}else{
 			Message msg = mHandler.obtainMessage();
-			msg.what = FILE_WRITE_WHAT;
-			mHandler.sendEmptyMessage(FILE_WRITE_WHAT);
+			msg.what = FILE_READ_WHAT;
+			mHandler.sendEmptyMessage(FILE_READ_WHAT);
 		}
 		
 
@@ -241,6 +287,9 @@ public class MainActivity extends Activity {
 	}
 	
 	private String[] toArray(List<String> strList) {
+		if(strList == null){
+			return new String[]{};
+		}
 		int listLen = strList.size();
 		String[] strArr = new String[listLen];
 		for (int i = 0; i < listLen; i++) {

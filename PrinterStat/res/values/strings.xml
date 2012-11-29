@@ -27,5 +27,8 @@
     <string name="no_conn_val">没有网络连接</string>
     <string name="time_out_val">网络连接超时</string>
     
+    <string name="dialog_net_title">网络异常</string>
+    <string name="dialog_ok">确定</string> 
+    
     
 </resources>
