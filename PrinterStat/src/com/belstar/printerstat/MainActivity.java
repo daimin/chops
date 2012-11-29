@@ -26,10 +26,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +43,10 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
+	public static final int FILE_WRITE_WHAT = 3;
+	public static final int SEND_WHAT = 1;
+	public static final int SUCCESS_WHAT = 2;
+	
 	private Button mCommit = null;
 	private EditText memoEdit;
 	private StatSelView deviceNo = null;
@@ -51,7 +58,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void handleMessage(Message msg) {
-			if (msg.what == 1) {
+			if (msg.what == SEND_WHAT) {
 				Bundle data = msg.getData();
 				String xinghao = data.getString("xinghao");
 				String num = data.getString("num");
@@ -59,11 +66,13 @@ public class MainActivity extends Activity {
 						+ "</xinghao><num>" + num + "</num></data>";
 				mThread = new MyThread(xmldata);
 				mThread.start();
-			} else if (msg.what == 2) {
+			} else if (msg.what == SUCCESS_WHAT) {
 				new AlertDialog.Builder(MainActivity.this).setTitle("成功")
 						.setMessage("数据发送成功").setPositiveButton("确定", null)
 						.show();
 
+			}else if(msg.what == FILE_WHAT){
+				
 			}
 		}
 
@@ -107,15 +116,43 @@ public class MainActivity extends Activity {
 
 		}
 	}
+	
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		boolean getFromNet = false;
 		String data = this.getIntent().getStringExtra(Config.GET_DATA_KEY);
+		if(data == null || data.length() <= 0){
+			data = this.getIntent().getStringExtra(Config.TIMEOUT_KEY);
+			getFromNet = true;
 
-		initSelView(data);
+		}
+		if(data != null && data.length() > 0){
+			Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+		}else{
+			data = this.getIntent().getStringExtra(Config.NO_NET_CONN_KEY);
+		}
+		
+		if(data != null && data.length() > 0){
+			Toast.makeText(this, data, Toast.LENGTH_LONG).show();
+		}
+		
+		if(getFromNet){
+			initSelView(data);
+			Message msg = mHandler.obtainMessage();
+			msg.what = FILE_WRITE_WHAT;
+			mHandler.sendEmptyMessage(FILE_WRITE_WHAT);
+		}else{
+			Message msg = mHandler.obtainMessage();
+			msg.what = FILE_WRITE_WHAT;
+			mHandler.sendEmptyMessage(FILE_WRITE_WHAT);
+		}
+		
+
 
 		/*
 		 * mNum = (EditText) findViewById(R.id.num); mXinghao = (EditText)
@@ -141,6 +178,7 @@ public class MainActivity extends Activity {
 	}
 	
 
+
 	private void initSelView(String txtData){
 		final XmlGeter xmlGeter = new XmlGeter(txtData);
 
@@ -153,34 +191,7 @@ public class MainActivity extends Activity {
 				final StatSelView ssv = (StatSelView) v;
 				final String[] arrPrinterIdArr = toArray(xmlGeter
 						.getPrinterIDs());
-				
-				new AlertDialog.Builder(MainActivity.this)
-				        .setTitle(MainActivity.this.getResources().getString(R.string.hit_printer_ID))
-				        .setIcon(android.R.drawable.ic_menu_more)
-				        .setNeutralButton("取消", new DialogInterface.OnClickListener(){
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-								
-							}
-				        	
-				        })
-						.setSingleChoiceItems(arrPrinterIdArr,
-								ssv.getChckItem(),
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-
-										ssv.setChckItem(which);
-										ssv.setTvSelText(arrPrinterIdArr[which]);
-
-										dialog.dismiss();
-
-									}
-								}).create().show();
+				StatDialog.getDialog(MainActivity.this, R.string.hit_printer_ID, ssv, arrPrinterIdArr).show();
 
 			}
 		});
@@ -192,20 +203,41 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(MainActivity.this, "dialog", Toast.LENGTH_LONG)
-						.show();
-				// StatDialog dialog2 = new StatDialog(MainActivity.this, 180,
-				// 180, R.layout.layout_dialog, R.style.Theme_dialog);
-				// dialog2.show();//显示Dialog
+				final StatSelView ssv = (StatSelView) v;
+				final String[] arrArchivesTypes = toArray(xmlGeter
+						.getArchivesTypes());
+				StatDialog.getDialog(MainActivity.this, R.string.hit_archives_type, ssv, arrArchivesTypes).show();
 
 			}
 		});
 
 		customName = (StatSelView) findViewById(R.id.customName);
 		customName.setInitTvSelText(xmlGeter.getCustomNames());
+		customName.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final StatSelView ssv = (StatSelView) v;
+				final String[] arrCustomNames = toArray(xmlGeter
+						.getCustomNames());
+				StatDialog.getDialog(MainActivity.this, R.string.hit_custom, ssv, arrCustomNames).show();
+				
+			}
+		});
 
 		adminName = (StatSelView) findViewById(R.id.adminName);
 		adminName.setInitTvSelText(xmlGeter.getAdminNames());
+		adminName.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final StatSelView ssv = (StatSelView) v;
+				final String[] arrAdminNames = toArray(xmlGeter
+						.getAdminNames());
+				StatDialog.getDialog(MainActivity.this, R.string.hit_admin, ssv, arrAdminNames).show();
+				
+			}
+		});
 	}
 	
 	private String[] toArray(List<String> strList) {

@@ -56,20 +56,32 @@ public class FirstActivity extends Activity {
     			mInitThread = new InitThread();
     			mInitThread.start();
     		}else if(msg.what == WHAT_XML_DATA){
-    			Intent intent = new Intent(FirstActivity.this, MainActivity.class);
     			Bundle data = msg.getData();
-    			intent.putExtra(Config.GET_DATA_KEY, data.getString(Config.GET_DATA_KEY));
-    			startActivity(intent);
-    			FirstActivity.this.finish();
+    			startMain(Config.GET_DATA_KEY, data);
     		}else if(msg.what == WHAT_NO_XML_DATA_TIMEOUT){
-    			Intent intent = new Intent(FirstActivity.this, MainActivity.class);
-    			startActivity(intent);
-    			FirstActivity.this.finish();
+    			startMain(Config.TIMEOUT_KEY, FirstActivity.this.getResources().getString(R.string.time_out_val));
     		}
     		
     	};
     };
 	
+    
+    
+    private void startMain(String key, Bundle data){
+		Intent intent = new Intent(FirstActivity.this, MainActivity.class);
+		
+		intent.putExtra(key, data.getString(Config.GET_DATA_KEY));
+		startActivity(intent);
+		FirstActivity.this.finish();
+    }
+    
+    private void startMain(String key,String txtData){
+		Intent intent = new Intent(FirstActivity.this, MainActivity.class);
+		
+		intent.putExtra(key, txtData);
+		startActivity(intent);
+		FirstActivity.this.finish();
+    }
 	
 
 
@@ -79,9 +91,13 @@ public class FirstActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_first);
         
-		Message msg = mHandler.obtainMessage();
-		msg.what = 1;
-		mHandler.sendMessage(msg);
+		if(NetUtil.IsNetworkAvailable(this.getBaseContext())){
+			Message msg = mHandler.obtainMessage();
+			msg.what = 1;
+			mHandler.sendMessage(msg);
+		}else{
+			startMain(Config.NO_NET_CONN_KEY, FirstActivity.this.getResources().getString(R.string.no_conn_val));
+		}
 		
 
 

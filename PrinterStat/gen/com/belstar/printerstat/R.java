@@ -76,6 +76,7 @@ public final class R {
         public static final int hit_memo=0x7f050009;
         public static final int hit_paper_scrap=0x7f050008;
         public static final int hit_printer_ID=0x7f050001;
+        public static final int no_conn_val=0x7f050011;
         public static final int save_text=0x7f05000b;
         /**  StatSelView的图标控件TAG 
          */
@@ -87,6 +88,7 @@ public final class R {
          */
         public static final int tag_tv_title=0x7f05000d;
         public static final int text_loading=0x7f05000c;
+        public static final int time_out_val=0x7f050012;
     }
     public static final class style {
         /** 

@@ -14,10 +14,39 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.belstar.printerstat.Config;
 
 public class NetUtil {
 
+	/**
+	 * 检测网络连接是否可用
+	 * 
+	 * @param ctx
+	 * @return true 可用; false 不可用
+	 */
+	public static boolean IsNetworkAvailable(Context ctx) {
+
+		ConnectivityManager cm = (ConnectivityManager) ctx
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		if (cm == null) {
+			return false;
+		}
+		NetworkInfo[] netinfo = cm.getAllNetworkInfo();
+		if (netinfo == null) {
+			return false;
+		}
+		for (int i = 0; i < netinfo.length; i++) {
+			if (netinfo[i].isConnected()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * 得到服务器响应的返回的字符串
 	 * 
