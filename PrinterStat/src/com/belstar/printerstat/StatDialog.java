@@ -37,4 +37,11 @@ public class StatDialog {
 		return dlg;
 		
 	}
+	
+	public static void alertDialog(Context ctx, String title, String content){
+		new AlertDialog.Builder(ctx).setTitle(title)
+		.setIcon(ctx.getResources().getDrawable(android.R.drawable.ic_dialog_alert))
+		.setMessage(content).setPositiveButton(ctx.getResources().getString(R.string.dialog_ok), null)
+		.show();
+	}
 }

@@ -13,6 +13,6 @@
   <drawable name="brown">#D7D7D7</drawable>
   <drawable name="green">#23F38E</drawable>
   <drawable name="tgreen">#AA00FF00</drawable>
-  <drawable name="tyellow">#88EEEE00</drawable>
+  <drawable name="tyellow">#AAEEEE00</drawable>
   
 </resources>

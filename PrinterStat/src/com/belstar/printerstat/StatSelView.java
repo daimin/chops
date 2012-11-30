@@ -7,6 +7,7 @@ import java.util.Map;
 import com.belstar.printerstat.entry.SelData;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;

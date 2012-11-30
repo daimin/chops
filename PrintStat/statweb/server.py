@@ -8,6 +8,8 @@ sys.path.append(os.getcwd())
 os.chdir("statweb")
 
 import web
+import web.webapi
+import xml.dom.minidom  
 
 
 import dbs.query
@@ -17,7 +19,8 @@ import conf
 from functions import *
 
 urls = (
-    '/', 'index'
+        '/', 'index',
+        '/put_data', 'putData'
 )
 
 class index:
@@ -46,6 +49,24 @@ class index:
 
         dbs.query.close()
         return xmltext
+
+class putData:
+    def POST(self):
+        inputData = web.input()
+        xmldata = inputData.popitem()[0]
+        
+        if xmldata:
+             doc = xml.dom.minidom.parseString(xmldata)  
+             for node in doc.getElementsByTagName("xinghao"):
+                 print node.firstChild.nodeValue
+             for node in doc.getElementsByTagName("num"):
+                 print node.firstChild.nodeValue
+        
+        return xmldata
+        
+    def GET(self):
+        return self.POST()
+        
 
 if __name__ == "__main__":
     
