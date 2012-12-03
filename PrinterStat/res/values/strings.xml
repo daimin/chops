@@ -7,9 +7,12 @@
     <string name="hit_custom">客户名称</string>
     <string name="hit_admin">管理员</string>
     <string name="hit_archives_type">档案类型</string>
+    <string name="hit_post_time">JOB发送时间</string>
+    <string name="hit_over_time">JOB完成时间</string>
     <string name="hit_archives_num">档案本数</string>
     <string name="hit_counter_init">计数器初始值</string>
     <string name="hit_counter_over">计数器完成值</string>
+
     <string name="hit_paper_scrap">纸张报废数量</string>
     <string name="hit_memo">备注</string>
     <string name="commit_text"> 提 交 </string>

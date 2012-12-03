@@ -18,46 +18,49 @@ public final class R {
         public static final int bg=0x7f020000;
         public static final int bg_b=0x7f020001;
         public static final int bg_hui=0x7f020002;
-        public static final int black=0x7f020010;
-        public static final int blue=0x7f020012;
-        public static final int brown=0x7f020016;
+        public static final int black=0x7f020011;
+        public static final int blue=0x7f020013;
+        public static final int brown=0x7f020017;
         public static final int bstar=0x7f020003;
         public static final int btn_normal=0x7f020004;
         public static final int btn_pressed=0x7f020005;
         public static final int choumo=0x7f020006;
         public static final int cilun=0x7f020007;
-        public static final int darkgrey=0x7f02000f;
+        public static final int darkgrey=0x7f020010;
         public static final int gongwenbao=0x7f020008;
-        public static final int green=0x7f020017;
+        public static final int green=0x7f020018;
         public static final int ic_launcher=0x7f020009;
-        public static final int lightblack=0x7f020011;
+        public static final int lightblack=0x7f020012;
         public static final int maozi=0x7f02000a;
-        public static final int mblue=0x7f020015;
-        public static final int mi=0x7f020013;
+        public static final int mblue=0x7f020016;
+        public static final int mi=0x7f020014;
         public static final int pp_bg_dialog=0x7f02000b;
         public static final int qianbi=0x7f02000c;
-        public static final int sblue=0x7f020014;
+        public static final int sblue=0x7f020015;
         public static final int shuben=0x7f02000d;
-        public static final int tgreen=0x7f020018;
-        public static final int tyellow=0x7f020019;
-        public static final int white=0x7f02000e;
+        public static final int tgreen=0x7f020019;
+        public static final int time=0x7f02000e;
+        public static final int tyellow=0x7f02001a;
+        public static final int white=0x7f02000f;
     }
     public static final class id {
         public static final int adminName=0x7f070003;
-        public static final int archivesNum=0x7f070005;
+        public static final int archivesNum=0x7f070007;
         public static final int archivesType=0x7f070004;
-        public static final int commitBtn=0x7f07000a;
-        public static final int counterInit=0x7f070006;
-        public static final int counterOver=0x7f070007;
+        public static final int commitBtn=0x7f07000c;
+        public static final int counterInit=0x7f070008;
+        public static final int counterOver=0x7f070009;
         public static final int customName=0x7f070002;
         public static final int deviceNo=0x7f070001;
-        public static final int dialogList=0x7f07000d;
-        public static final int dialog_title=0x7f07000c;
-        public static final int icon=0x7f07000e;
-        public static final int memo=0x7f070009;
-        public static final int paperScrap=0x7f070008;
+        public static final int dialogList=0x7f07000f;
+        public static final int dialog_title=0x7f07000e;
+        public static final int icon=0x7f070010;
+        public static final int memo=0x7f07000b;
+        public static final int overTime=0x7f070006;
+        public static final int paperScrap=0x7f07000a;
+        public static final int postTime=0x7f070005;
         public static final int progressBar1=0x7f070000;
-        public static final int saveBtn=0x7f07000b;
+        public static final int saveBtn=0x7f07000d;
     }
     public static final class layout {
         public static final int activity_first=0x7f030000;
@@ -67,32 +70,34 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f050000;
-        public static final int commit_text=0x7f05000a;
-        public static final int desc_iv_icon=0x7f050010;
-        public static final int dialog_net_title=0x7f050013;
-        public static final int dialog_ok=0x7f050014;
+        public static final int commit_text=0x7f05000c;
+        public static final int desc_iv_icon=0x7f050012;
+        public static final int dialog_net_title=0x7f050015;
+        public static final int dialog_ok=0x7f050016;
         public static final int hit_admin=0x7f050003;
-        public static final int hit_archives_num=0x7f050005;
+        public static final int hit_archives_num=0x7f050007;
         public static final int hit_archives_type=0x7f050004;
-        public static final int hit_counter_init=0x7f050006;
-        public static final int hit_counter_over=0x7f050007;
+        public static final int hit_counter_init=0x7f050008;
+        public static final int hit_counter_over=0x7f050009;
         public static final int hit_custom=0x7f050002;
-        public static final int hit_memo=0x7f050009;
-        public static final int hit_paper_scrap=0x7f050008;
+        public static final int hit_memo=0x7f05000b;
+        public static final int hit_over_time=0x7f050006;
+        public static final int hit_paper_scrap=0x7f05000a;
+        public static final int hit_post_time=0x7f050005;
         public static final int hit_printer_ID=0x7f050001;
-        public static final int no_conn_val=0x7f050011;
-        public static final int save_text=0x7f05000b;
+        public static final int no_conn_val=0x7f050013;
+        public static final int save_text=0x7f05000d;
         /**  StatSelView的图标控件TAG 
          */
-        public static final int tag_iv_icon=0x7f05000f;
+        public static final int tag_iv_icon=0x7f050011;
         /**  StatSelView的选择显示控件TAG 
          */
-        public static final int tag_tv_sel=0x7f05000e;
+        public static final int tag_tv_sel=0x7f050010;
         /**  StatSelView的标题控件TAG 
          */
-        public static final int tag_tv_title=0x7f05000d;
-        public static final int text_loading=0x7f05000c;
-        public static final int time_out_val=0x7f050012;
+        public static final int tag_tv_title=0x7f05000f;
+        public static final int text_loading=0x7f05000e;
+        public static final int time_out_val=0x7f050014;
     }
     public static final class style {
         /** 

@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 
 import android.util.DisplayMetrics;
@@ -31,6 +33,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
@@ -43,6 +46,8 @@ public class MainActivity extends Activity {
 
 	public static final int SEND_WHAT = 1;
 	public static final int SUCCESS_WHAT = 2;
+	
+	public static final String XML_DATA_KEY = "xml_data";
 
 	private Button mCommitBtn = null;
 	private EditText memoEdit;
@@ -50,6 +55,15 @@ public class MainActivity extends Activity {
 	private StatSelView adminName;
 	private StatSelView customName;
 	private StatSelView archivesType = null;
+	private StatSelView postTime = null;
+	private StatSelView overTime = null;
+	
+	private EditText counterInitEdit;
+	private EditText counterOverEdit;
+	private EditText paperScrapEdit;
+	private Button saveBtn;
+	
+	private DataThread mThread = null;
 
 	Handler mHandler = new Handler() {
 
@@ -64,7 +78,7 @@ public class MainActivity extends Activity {
 						+ "</xinghao><num>" 
 				        + num 
 				        + "</num></data>";
-				mThread = new MyThread(xmldata);
+				mThread = new DataThread(xmldata);
 				mThread.start();
 			} else if (msg.what == SUCCESS_WHAT) {
 				new AlertDialog.Builder(MainActivity.this).setTitle("成功")
@@ -80,27 +94,11 @@ public class MainActivity extends Activity {
 
 	};
 
-	Handler mUIHandler = new Handler() {
 
-		@Override
-		public void handleMessage(Message msg) {
-			if (msg.what == UI_FILE_READ_WHAT) {
-				Bundle data = msg.getData();
-				String xinghao = data.getString("xinghao");
-				String num = data.getString("num");
-				String xmldata = "<data><xinghao>" + xinghao
-						+ "</xinghao><num>" + num + "</num></data>";
-				mThread = new MyThread(xmldata);
-				mThread.start();
-			}
-		}
-
-	};
-
-	class MyThread extends Thread {
+	class DataThread extends Thread {
 		String xmldata = "";
 
-		public MyThread(String xmldata) {
+		public DataThread(String xmldata) {
 			this.xmldata = xmldata;
 		}
 
@@ -125,16 +123,7 @@ public class MainActivity extends Activity {
 		};
 	}
 
-	MyThread mThread = null;
 
-	InitThread mInitThread = null;
-
-	class InitThread extends Thread {
-		@Override
-		public void run() {
-
-		}
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -262,6 +251,30 @@ public class MainActivity extends Activity {
 
 			}
 		});
+		
+		postTime = (StatSelView)findViewById(R.id.postTime);
+		postTime.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final StatSelView ssv = (StatSelView) v;
+				StatDialog.getTimePickerDialog(MainActivity.this, ssv);
+				Bundle args = new Bundle();
+			}
+		});
+		overTime = (StatSelView)findViewById(R.id.overTime);
+		
+		memoEdit = (EditText) findViewById(R.id.memo);
+		counterInitEdit = (EditText) findViewById(R.id.counterInit);
+		counterOverEdit = (EditText) findViewById(R.id.counterOver);
+		paperScrapEdit = (EditText) findViewById(R.id.paperScrap);
+		saveBtn = (Button) findViewById(R.id.saveBtn);
+	}
+	
+	private String getPustData(){
+		StringBuffer xmlBuf = new StringBuffer();
+		
+		return "";
 	}
 
 	private String[] toArray(List<String> strList) {
@@ -275,6 +288,12 @@ public class MainActivity extends Activity {
 		}
 
 		return strArr;
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		// TODO Auto-generated method stub
+		return super.onCreateDialog(id, args);
 	}
 
 }

@@ -14,46 +14,64 @@
             android:orientation="vertical" >
 
             <com.belstar.printerstat.StatSelView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                android:paddingTop="4dip"
-                android:background="@drawable/lightblack"
-                android:layout_marginBottom="1dip"
-                android:tag="@string/hit_printer_ID"
                 android:id="@+id/deviceNo"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dip"
+                android:background="@drawable/lightblack"
                 android:clickable="true"
-                />
+                android:paddingTop="4dip"
+                android:tag="@string/hit_printer_ID" />
+
             <com.belstar.printerstat.StatSelView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                 android:paddingTop="4dip"
-                android:background="@drawable/lightblack"
-                android:layout_marginBottom="1dip"
-                android:tag="@string/hit_custom"
                 android:id="@+id/customName"
-                android:clickable="true"
-                />
-           <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                 android:paddingTop="4dip"
-                android:background="@drawable/lightblack"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="1dip"
-                android:tag="@string/hit_admin"
+                android:background="@drawable/lightblack"
+                android:clickable="true"
+                android:paddingTop="4dip"
+                android:tag="@string/hit_custom" />
+
+            <com.belstar.printerstat.StatSelView
                 android:id="@+id/adminName"
-                android:clickable="true"
-                />
-           
-           <com.belstar.printerstat.StatSelView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" 
-                 android:paddingTop="4dip"
-                android:background="@drawable/lightblack"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="1dip"
-                android:tag="@string/hit_archives_type"
-                android:id="@+id/archivesType"
+                android:background="@drawable/lightblack"
                 android:clickable="true"
-                />
+                android:paddingTop="4dip"
+                android:tag="@string/hit_admin" />
+
+            <com.belstar.printerstat.StatSelView
+                android:id="@+id/archivesType"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dip"
+                android:background="@drawable/lightblack"
+                android:clickable="true"
+                android:paddingTop="4dip"
+                android:tag="@string/hit_archives_type" />
+
+            <com.belstar.printerstat.StatSelView
+                android:id="@+id/postTime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dip"
+                android:background="@drawable/lightblack"
+                android:clickable="true"
+                android:paddingTop="4dip"
+                android:tag="@string/hit_post_time" />
+
+            <com.belstar.printerstat.StatSelView
+                android:id="@+id/overTime"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="1dip"
+                android:background="@drawable/lightblack"
+                android:clickable="true"
+                android:paddingTop="4dip"
+                android:tag="@string/hit_over_time" />
 
             <EditText
                 android:id="@+id/archivesNum"

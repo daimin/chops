@@ -20,7 +20,8 @@ from functions import *
 
 urls = (
         '/', 'index',
-        '/put_data', 'putData'
+        '/put_data', 'putData',
+        '/display', 'display'
 )
 
 class index:
@@ -66,6 +67,22 @@ class putData:
         
     def GET(self):
         return self.POST()
+    
+class display:
+    def GET(self):
+        web.header('Content-Type', 'text/html;charset=UTF-8')
+        result = dbs.query.get_daily_stat()
+        htmltxt = '<!DOCTYPE html><!--STATUS OK--><html><head><style type="text/css">\
+        body{font-size:12px;} .tab{margin:0 auto;border:1px solid #000;}.tab th{background:#ccc;}.tab td1{background:#cdc;}</style></head><body>'
+        htmltxt = '%s<table cellpadding="3" cellspacing="1" class="tab" border="0" style="width:900px;">' %(htmltxt)
+        htmltxt = '%s<tr><th>ID</th><th>打印机编号</th><th>客户名称</th><th>档案类型</th><th>打印数量</th><th>发送时间</th><th>完成时间\
+        </th><th>初始值</th><th>完成值</th><th>纸张报废数</th><th>录入日期</th><th>录入人</th></tr>' %(htmltxt)
+        for did,date,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,adminname,scrap_num in result:
+            htmltxt = '%s<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td></tr>'\
+             %(htmltxt,did,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,scrap_num,date,adminname)
+        htmltxt = "%s</body></html>" %(htmltxt)   
+        return htmltxt
+        
         
 
 if __name__ == "__main__":

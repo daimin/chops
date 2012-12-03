@@ -46,11 +46,15 @@ public class StatSelView extends LinearLayout {
 			String hitPrinterID = ctx.getResources().getString(R.string.hit_printer_ID);
 			String hitArchivesType = ctx.getResources().getString(R.string.hit_archives_type);
 			String hitCustom = ctx.getResources().getString(R.string.hit_custom);
+			String hitPostTime = ctx.getResources().getString(R.string.hit_post_time);
+			String hitOverTime = ctx.getResources().getString(R.string.hit_over_time);
 			selViewData = new HashMap<String, SelData>();
 			selViewData.put(hitAdmin, new SelData(hitAdmin,R.drawable.gongwenbao));
-			selViewData.put(hitPrinterID, new SelData(hitAdmin,R.drawable.qianbi));
-			selViewData.put(hitArchivesType, new SelData(hitAdmin,R.drawable.shuben));
-			selViewData.put(hitCustom, new SelData(hitAdmin,R.drawable.maozi));
+			selViewData.put(hitPrinterID, new SelData(hitPrinterID,R.drawable.qianbi));
+			selViewData.put(hitArchivesType, new SelData(hitArchivesType,R.drawable.shuben));
+			selViewData.put(hitCustom, new SelData(hitCustom,R.drawable.maozi));
+			selViewData.put(hitPostTime, new SelData(hitPostTime,R.drawable.time));
+			selViewData.put(hitOverTime, new SelData(hitOverTime,R.drawable.time));
 		}
 		
 		return selViewData;
@@ -74,7 +78,11 @@ public class StatSelView extends LinearLayout {
 		String tag = this.getTag().toString();
 		
 		tvTitle.setText(tag);
-		ivIcon.setImageResource(selViewData.get(tag).icon);
+		SelData selData = selViewData.get(tag);
+		if(selData != null && selData.icon != 0){
+			ivIcon.setImageResource(selViewData.get(tag).icon);
+		}
+		
 		
 
 		this.addView(sel_item);
