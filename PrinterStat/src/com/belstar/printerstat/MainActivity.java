@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.DialogInterface;
 
 import android.util.DisplayMetrics;
@@ -47,7 +48,14 @@ public class MainActivity extends Activity {
 	public static final int SEND_WHAT = 1;
 	public static final int SUCCESS_WHAT = 2;
 	
+	/**
+	 * 日期和时间空间的ID
+	 */
+	private static final int DATE_DIALOG_ID = 0;
+	private static final int TIME_DIALOG_ID = 1;
+	
 	public static final String XML_DATA_KEY = "xml_data";
+
 
 	private Button mCommitBtn = null;
 	private EditText memoEdit;
@@ -258,8 +266,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				final StatSelView ssv = (StatSelView) v;
-				StatDialog.getTimePickerDialog(MainActivity.this, ssv);
-				Bundle args = new Bundle();
+				//StatDialog.getTimePickerDialog(MainActivity.this, ssv);
+				//Bundle args = new Bundle();
+				showDialog(TIME_DIALOG_ID);
 			}
 		});
 		overTime = (StatSelView)findViewById(R.id.overTime);
@@ -292,8 +301,26 @@ public class MainActivity extends Activity {
 	
 	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
-		// TODO Auto-generated method stub
+		switch(id){
+		case DATE_DIALOG_ID:
+		case TIME_DIALOG_ID:
+			return new TimePickerDialog(MainActivity.this, new OnTimeSetListener() {
+
+				@Override
+				public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+					//ssv.setTvSelText(hourOfDay + ":" + minute);
+					
+
+				}
+			}, 23, 25, true);
+		}
 		return super.onCreateDialog(id, args);
+	}
+	
+	@Override
+	protected void onPrepareDialog(int id, Dialog dialog, Bundle args) {
+		// TODO Auto-generated method stub
+		super.onPrepareDialog(id, dialog, args);
 	}
 
 }
