@@ -1,5 +1,6 @@
 package com.belstar.printerstat;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.http.client.methods.HttpPost;
@@ -7,6 +8,7 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 
 
+import com.belstar.printerstat.util.ComUtil;
 import com.belstar.printerstat.util.FileOperator;
 import com.belstar.printerstat.util.NetUtil;
 import com.belstar.printerstat.util.XmlGeter;
@@ -70,6 +72,8 @@ public class MainActivity extends Activity {
 	private EditText counterOverEdit;
 	private EditText paperScrapEdit;
 	private Button saveBtn;
+	
+	private StatSelView mTimeSelView = null;
 	
 	private DataThread mThread = null;
 
@@ -261,18 +265,28 @@ public class MainActivity extends Activity {
 		});
 		
 		postTime = (StatSelView)findViewById(R.id.postTime);
+		postTime.setTvSelText(ComUtil.getTime());
 		postTime.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				final StatSelView ssv = (StatSelView) v;
-				//StatDialog.getTimePickerDialog(MainActivity.this, ssv);
-				//Bundle args = new Bundle();
+				mTimeSelView = ssv;
 				showDialog(TIME_DIALOG_ID);
 			}
 		});
 		overTime = (StatSelView)findViewById(R.id.overTime);
-		
+		overTime.setTvSelText(ComUtil.getTime());
+		overTime.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final StatSelView ssv = (StatSelView) v;
+				mTimeSelView = ssv;
+				showDialog(TIME_DIALOG_ID);
+			}
+		});
+
 		memoEdit = (EditText) findViewById(R.id.memo);
 		counterInitEdit = (EditText) findViewById(R.id.counterInit);
 		counterOverEdit = (EditText) findViewById(R.id.counterOver);
@@ -304,15 +318,17 @@ public class MainActivity extends Activity {
 		switch(id){
 		case DATE_DIALOG_ID:
 		case TIME_DIALOG_ID:
+			String curTime = mTimeSelView.getTvSel().getText().toString();
+			final Date curDate = ComUtil.parseTime(curTime);
 			return new TimePickerDialog(MainActivity.this, new OnTimeSetListener() {
 
 				@Override
 				public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-					//ssv.setTvSelText(hourOfDay + ":" + minute);
-					
+				
+					mTimeSelView.setTvSelText(ComUtil.getTimeByHourMin(hourOfDay, minute));
 
 				}
-			}, 23, 25, true);
+			}, curDate.getHours(), curDate.getMinutes(), true);
 		}
 		return super.onCreateDialog(id, args);
 	}
