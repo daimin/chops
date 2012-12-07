@@ -3,6 +3,7 @@
 #encoding=utf-8
 
 import sys,os
+import datetime
 os.chdir("..")
 sys.path.append(os.getcwd()) 
 os.chdir("statweb")
@@ -11,7 +12,7 @@ import web
 import web.webapi
 import xml.dom.minidom  
 
-
+import dbs.db
 import dbs.query
 
 import conf
@@ -54,16 +55,69 @@ class index:
 class putData:
     def POST(self):
         inputData = web.input()
-        xmldata = inputData.popitem()[0]
-        
+        items = inputData.items()
+        res = ""
+        xmldata = items[0][0]
+        print xmldata
         if xmldata:
-             doc = xml.dom.minidom.parseString(xmldata)  
-             for node in doc.getElementsByTagName("xinghao"):
-                 print node.firstChild.nodeValue
-             for node in doc.getElementsByTagName("num"):
-                 print node.firstChild.nodeValue
-        
-        return xmldata
+            adminName = archivesType = customName = memo = overTime = sendTime = postTime = printerID = ""
+            archivesNum = counterInit = counterOver = paperScrap = 0
+            curdate = ""
+            doc = xml.dom.minidom.parseString(xmldata)  
+            for node in doc.getElementsByTagName("SendTime"):  
+                sendTime =  datetime.datetime.strptime(node.firstChild.nodeValue, "%Y-%m-%d %H:%M:%S")
+                curdate = sendTime.strftime("%Y-%m-%d")
+                
+            for node in doc.getElementsByTagName("AdminName"):
+                adminName = node.firstChild.nodeValue
+                
+            for node in doc.getElementsByTagName("ArchivesType"):
+                archivesType = node.firstChild.nodeValue
+                
+            for node in doc.getElementsByTagName("CustomName"):   
+                customName = node.firstChild.nodeValue
+                
+            for node in doc.getElementsByTagName("Memo"):
+                try:
+                    memo = node.firstChild.nodeValue
+                except:
+                    pass             
+                
+            for node in doc.getElementsByTagName("OverTime"):   
+                overTime = node.firstChild.nodeValue 
+                    
+            for node in doc.getElementsByTagName("PostTime"):   
+                postTime = node.firstChild.nodeValue   
+                 
+            for node in doc.getElementsByTagName("PrinterID"):   
+                printerID = node.firstChild.nodeValue                 
+
+            for node in doc.getElementsByTagName("ArchivesNum"):   
+                archivesNum = node.firstChild.nodeValue     
+
+            for node in doc.getElementsByTagName("CounterInit"):   
+                counterInit = node.firstChild.nodeValue   
+            
+            for node in doc.getElementsByTagName("CounterOver"):   
+                counterOver = node.firstChild.nodeValue      
+                
+            for node in doc.getElementsByTagName("PaperScrap"):   
+                paperScrap = node.firstChild.nodeValue     
+            
+            overTime = "%s %s:00" %(curdate,overTime)  
+            postTime = "%s %s:00" %(curdate,postTime)
+              
+            conn = dbs.db.Db.getConn()
+            cur = conn.cursor()
+            sql = "insert into daily_stat(`date`,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,adminname,scrap_num,memo) \
+            values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"\
+             %(curdate,printerID,customName,archivesType,archivesNum,postTime,overTime,counterInit,counterOver,adminName,paperScrap,memo)
+            if cur.execute(sql):
+                res = "success" 
+            conn.commit()
+            cur.close()  
+                                                      
+        return res
         
     def GET(self):
         return self.POST()
@@ -72,6 +126,7 @@ class display:
     def GET(self):
         web.header('Content-Type', 'text/html;charset=UTF-8')
         result = dbs.query.get_daily_stat()
+        print dir(result)
         htmltxt = '<!DOCTYPE html><!--STATUS OK--><html><head><style type="text/css">\
         body{font-size:12px;} .tab{margin:0 auto;border:1px solid #000;}.tab th{background:#ccc;}.tab td1{background:#cdc;}</style></head><body>'
         htmltxt = '%s<table cellpadding="3" cellspacing="1" class="tab" border="0" style="width:900px;">' %(htmltxt)

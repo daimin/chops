@@ -1,5 +1,6 @@
 package com.belstar.printerstat;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -51,7 +52,12 @@ public class MainActivity extends Activity {
 	public static final int SUCCESS_WHAT = 2;
 	
 	/**
-	 * 日期和时间空间的ID
+	 * 返回值：成功
+	 */
+	public static final String RES_SUCCESS = "success";
+	
+	/**
+	 * 日期和时间控件的ID
 	 */
 	private static final int DATE_DIALOG_ID = 0;
 	private static final int TIME_DIALOG_ID = 1;
@@ -59,8 +65,6 @@ public class MainActivity extends Activity {
 	public static final String XML_DATA_KEY = "xml_data";
 
 
-	private Button mCommitBtn = null;
-	private EditText memoEdit;
 	private StatSelView deviceNo = null;
 	private StatSelView adminName;
 	private StatSelView customName;
@@ -71,7 +75,13 @@ public class MainActivity extends Activity {
 	private EditText counterInitEdit;
 	private EditText counterOverEdit;
 	private EditText paperScrapEdit;
+	private EditText archivesNumEdit;
+	private EditText memoEdit;
+
+
+	
 	private Button saveBtn;
+	private Button commitBtn;
 	
 	private StatSelView mTimeSelView = null;
 	
@@ -83,18 +93,15 @@ public class MainActivity extends Activity {
 		public void handleMessage(Message msg) {
 			if (msg.what == SEND_WHAT) {
 				Bundle data = msg.getData();
-				String xinghao = data.getString("xinghao");
-				String num = data.getString("num");
-				String xmldata = "<data><xinghao>" 
-				        + xinghao
-						+ "</xinghao><num>" 
-				        + num 
-				        + "</num></data>";
+				String xmldata = data.getString(XML_DATA_KEY);
 				mThread = new DataThread(xmldata);
-				mThread.start();
+				mThread.start(); 
 			} else if (msg.what == SUCCESS_WHAT) {
-				new AlertDialog.Builder(MainActivity.this).setTitle("成功")
-						.setMessage("数据发送成功").setPositiveButton("确定", null)
+				new AlertDialog.Builder(MainActivity.this)
+				        .setTitle(MainActivity.this.getResources()
+						.getString(R.string.dialog_success_title))
+						.setMessage(MainActivity.this.getResources().getString(R.string.dialog_success_cont))
+						.setPositiveButton(MainActivity.this.getResources().getString(R.string.dialog_ok), null)
 						.show();
 
 			} else if (msg.what == FILE_WRITE_WHAT) {
@@ -116,7 +123,7 @@ public class MainActivity extends Activity {
 
 		public void run() {
 			HttpPost post = new HttpPost(Config.PUT_URL);
-
+            this.xmldata = URLEncoder.encode(this.xmldata);
 			ByteArrayEntity contents = new ByteArrayEntity(
 					this.xmldata.getBytes());
 			post.setEntity(contents);
@@ -127,9 +134,9 @@ public class MainActivity extends Activity {
 			} catch (ConnectTimeoutException e) {
 				e.printStackTrace();
 			}
-			if (res.equals("success")) {
+			if (res.equals(RES_SUCCESS)) {
 				Message msg = mHandler.obtainMessage();
-				msg.what = 2;
+				msg.what = SUCCESS_WHAT;
 				mHandler.sendMessage(msg);
 			}
 		};
@@ -179,24 +186,8 @@ public class MainActivity extends Activity {
 			mHandler.sendMessage(msg);
 		}
 
-		mCommitBtn = (Button) findViewById(R.id.commitBtn);
+		
 
-		mCommitBtn.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				
-					Message msg = mHandler.obtainMessage();
-					msg.what = 1;
-					Bundle data = new Bundle();
-					data.putString("xinghao", "dsdsdssd");
-					data.putString("num", "122");
-					msg.setData(data);
-					mHandler.sendMessage(msg);
-			}
-		});
-
-		memoEdit = (EditText) findViewById(R.id.memo);
 
 	}
 
@@ -290,14 +281,70 @@ public class MainActivity extends Activity {
 		memoEdit = (EditText) findViewById(R.id.memo);
 		counterInitEdit = (EditText) findViewById(R.id.counterInit);
 		counterOverEdit = (EditText) findViewById(R.id.counterOver);
+		archivesNumEdit = (EditText) findViewById(R.id.archivesNum);
 		paperScrapEdit = (EditText) findViewById(R.id.paperScrap);
 		saveBtn = (Button) findViewById(R.id.saveBtn);
+		commitBtn = (Button) findViewById(R.id.commitBtn);
+		commitBtn.setOnClickListener(new Button.OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				
+				String xmlData = MainActivity.this.getPustData();
+				Message msg = mHandler.obtainMessage();
+				Bundle data = new Bundle();
+				msg.what = SEND_WHAT;
+				data.putString(XML_DATA_KEY, xmlData);
+				msg.setData(data);
+				mHandler.sendMessage(msg);
+			}
+			
+		});
 	}
 	
 	private String getPustData(){
-		StringBuffer xmlBuf = new StringBuffer();
+		SendData sendData = new SendData();
+		sendData.setAdminName(adminName.getTvSel().getText().toString());
+		int archivesNum = 0;
+		try{
+			archivesNum = Integer.parseInt(archivesNumEdit.getText().toString().trim());
+		}catch(NumberFormatException nfe){
+			archivesNum = 0;
+		}
 		
-		return "";
+		sendData.setArchivesNum(archivesNum);
+		sendData.setArchivesType(archivesType.getTvSel().getText().toString());
+		int countInit = 0;
+		try{
+			countInit = Integer.parseInt(counterInitEdit.getText().toString().trim());
+		}catch(NumberFormatException nfe){
+			countInit = 0;
+		}
+		
+		sendData.setCounterInit(countInit);
+		int countOver = 0;
+		try{
+			countOver = Integer.parseInt(counterOverEdit.getText().toString().trim());
+		}catch(NumberFormatException nfe){
+			countOver = 0;
+		}
+		sendData.setCounterOver(countOver);
+		sendData.setCustomName(customName.getTvSel().getText().toString());
+		sendData.setMemo(memoEdit.getText().toString());
+		sendData.setPostTime(postTime.getTvSel().getText().toString());
+		sendData.setOverTime(overTime.getTvSel().getText().toString());
+		int paperScrap = 0;
+		try{
+			paperScrap = Integer.parseInt(paperScrapEdit.getText().toString().trim());
+		}catch(NumberFormatException nfe){
+			paperScrap = 0;
+		}
+		sendData.setPaperScrap(paperScrap);
+		sendData.setPrinterID(deviceNo.getTvSel().getText().toString());
+		sendData.setSendTime(ComUtil.getDateTime());
+		
+		
+		return XmlGeter.getSendDataXml(sendData);
 	}
 
 	private String[] toArray(List<String> strList) {

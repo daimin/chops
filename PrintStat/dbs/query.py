@@ -68,7 +68,7 @@ def get_printer_admins():
 def get_daily_stat():
     conn = db.Db.getConn()
     cur = conn.cursor()
-    query = "select * from daily_stat order by id desc"
+    query = "select `id`,`date`,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,adminname,scrap_num from daily_stat order by id desc"
     cur.execute(query)
     result = cur.fetchall()
     #for id,date,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,adminname,scrap_num in result:

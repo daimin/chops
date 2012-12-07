@@ -15,8 +15,8 @@ class Db(object):
     conn = None
     @staticmethod
     def getConn():
-        if Db.conn == None:
-            Db.conn = sqlite3.connect(conf.DB_FILE)
+        
+        Db.conn = sqlite3.connect(conf.DB_FILE)
         return Db.conn
     
     @staticmethod
