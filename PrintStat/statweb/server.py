@@ -126,7 +126,6 @@ class display:
     def GET(self):
         web.header('Content-Type', 'text/html;charset=UTF-8')
         result = dbs.query.get_daily_stat()
-        print dir(result)
         htmltxt = '<!DOCTYPE html><!--STATUS OK--><html><head><style type="text/css">\
         body{font-size:12px;} .tab{margin:0 auto;border:1px solid #000;}.tab th{background:#ccc;}.tab td1{background:#cdc;}</style></head><body>'
         htmltxt = '%s<table cellpadding="3" cellspacing="1" class="tab" border="0" style="width:900px;">' %(htmltxt)
@@ -135,13 +134,16 @@ class display:
         for did,date,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,adminname,scrap_num in result:
             htmltxt = '%s<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td></tr>'\
              %(htmltxt,did,PID,customname,archives_type,num,post_time,finish_time,init_num,finish_num,scrap_num,date,adminname)
+            print htmltxt
         htmltxt = "%s</body></html>" %(htmltxt)   
         return htmltxt
         
         
 
 if __name__ == "__main__":
-    
+    #print sys.getdefaultencoding() #ascii python默认使用ascii编码解码程序去处理字符流，设置defaultencoding的编码可以改变默认处理编码。
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
     sys.argv.append(conf.APP_PORT)
     app = web.application(urls, globals())

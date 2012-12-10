@@ -72,6 +72,8 @@ public final class R {
         public static final int app_name=0x7f050000;
         public static final int commit_text=0x7f05000c;
         public static final int desc_iv_icon=0x7f050012;
+        public static final int dialog_failure_cont=0x7f05001a;
+        public static final int dialog_failure_title=0x7f050019;
         public static final int dialog_net_title=0x7f050015;
         public static final int dialog_ok=0x7f050016;
         public static final int dialog_success_cont=0x7f050018;

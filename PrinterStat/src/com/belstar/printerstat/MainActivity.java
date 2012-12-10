@@ -9,6 +9,7 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.ByteArrayEntity;
 
 
+import com.belstar.printerstat.entry.SendData;
 import com.belstar.printerstat.util.ComUtil;
 import com.belstar.printerstat.util.FileOperator;
 import com.belstar.printerstat.util.NetUtil;
@@ -42,19 +43,21 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	public static final int FILE_WRITE_WHAT = 3;
-	public static final int FILE_READ_WHAT = 4;
+	public static final int FILE_WRITE_WHAT = 23;
+	public static final int FILE_READ_WHAT = 24;
 
-	public static final int UI_FILE_WRITE_WHAT = 5;
-	public static final int UI_FILE_READ_WHAT = 6;
+	public static final int UI_FILE_WRITE_WHAT = 35;
+	public static final int UI_FILE_READ_WHAT = 36;
 
-	public static final int SEND_WHAT = 1;
-	public static final int SUCCESS_WHAT = 2;
+	public static final int SEND_WHAT = 11;
+	public static final int SUCCESS_WHAT = 12;
+	public static final int FAILURE_WHAT = 13;
 	
 	/**
 	 * 返回值：成功
 	 */
 	public static final String RES_SUCCESS = "success";
+
 	
 	/**
 	 * 日期和时间控件的ID
@@ -100,11 +103,20 @@ public class MainActivity extends Activity {
 				new AlertDialog.Builder(MainActivity.this)
 				        .setTitle(MainActivity.this.getResources()
 						.getString(R.string.dialog_success_title))
+						.setIcon(android.R.drawable.ic_dialog_info)
 						.setMessage(MainActivity.this.getResources().getString(R.string.dialog_success_cont))
 						.setPositiveButton(MainActivity.this.getResources().getString(R.string.dialog_ok), null)
 						.show();
 
-			} else if (msg.what == FILE_WRITE_WHAT) {
+			} else if(msg.what == FAILURE_WHAT){
+				new AlertDialog.Builder(MainActivity.this)
+		        .setTitle(MainActivity.this.getResources()
+				.getString(R.string.dialog_failure_title))
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setMessage(MainActivity.this.getResources().getString(R.string.dialog_failure_cont))
+				.setPositiveButton(MainActivity.this.getResources().getString(R.string.dialog_ok), null)
+				.show();
+			}else if (msg.what == FILE_WRITE_WHAT) {
 				Bundle data = msg.getData();
 				String xmlData = data.getString(Config.GET_DATA_KEY);
 				FileOperator.writeXMlDataFile(MainActivity.this, xmlData);
@@ -127,16 +139,21 @@ public class MainActivity extends Activity {
 			ByteArrayEntity contents = new ByteArrayEntity(
 					this.xmldata.getBytes());
 			post.setEntity(contents);
-			String res = null;
+			String res = "";
 			try {
 				res = NetUtil.GetStringEntity(NetUtil.MakeRequest(post));
-				Log.i("MainActivity", res);
+				
 			} catch (ConnectTimeoutException e) {
 				e.printStackTrace();
+				
 			}
-			if (res.equals(RES_SUCCESS)) {
+			if (res != null && res.equals(RES_SUCCESS)) {
 				Message msg = mHandler.obtainMessage();
 				msg.what = SUCCESS_WHAT;
+				mHandler.sendMessage(msg);
+			}else{
+				Message msg = mHandler.obtainMessage();
+				msg.what = FAILURE_WHAT;
 				mHandler.sendMessage(msg);
 			}
 		};

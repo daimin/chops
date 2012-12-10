@@ -11,7 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
-import com.belstar.printerstat.SendData;
+import com.belstar.printerstat.entry.SendData;
 
 import android.util.Log;
 

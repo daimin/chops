@@ -36,5 +36,8 @@
     <string name="dialog_success_title">成功</string> 
     <string name="dialog_success_cont">数据发送成功</string> 
     
+    <string name="dialog_failure_title">失败</string> 
+    <string name="dialog_failure_cont">请求超时或服务器连接失败</string>
+    
     
 </resources>

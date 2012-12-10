@@ -43,6 +43,7 @@ public class FirstActivity extends Activity {
 					res = NetUtil.GetStringEntity(NetUtil.MakeRequest(get));
 				} catch (ConnectTimeoutException e) {
 					e.printStackTrace();
+					
 				} 
 				if(res !=null && res.length() > 0){
 					Message msg = mHandler.obtainMessage();

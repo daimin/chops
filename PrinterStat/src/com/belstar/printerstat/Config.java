@@ -2,8 +2,8 @@ package com.belstar.printerstat;
 
 public interface Config {
 
-	public static final String HOST = "http://192.168.211.91:13456";
-//	public static final String HOST = "http://192.168.0.120:13456";
+//	public static final String HOST = "http://192.168.211.91:13456";
+	public static final String HOST = "http://192.168.0.120:13456";
 	public static final String PUT_URL = HOST + "/put_data"; 
     public static final String GET_URL = HOST;
 	
